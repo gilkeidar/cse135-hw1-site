@@ -22,4 +22,6 @@ jobs:
           port: ${{ secrets.PORT }}
           source: "code/*"
           target: "/var/www/gilkeidar.com/public_html"
+          #  Copy the files to the target without the code/ directory (e.g., code/index.html will be copied to public_html/index.html
+          #  instead of public_html/code/index.html)
           strip_components: 1
