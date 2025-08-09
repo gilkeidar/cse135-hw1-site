@@ -20,4 +20,4 @@ jobs:
           port: ${{ secrets.PORT }}
           source: "code/*"
           target: "/var/www/gilkeidar.com/public_html"
-          strip_components: true
+          strip_components: 1
