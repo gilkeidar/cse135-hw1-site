@@ -1,0 +1,2 @@
+test document to make sure that GitHub deployment workflow doesn't get triggered
+when the code/ directory is not changed.
