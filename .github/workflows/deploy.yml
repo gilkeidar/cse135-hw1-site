@@ -1,3 +1,5 @@
+#  Simple workflow to deploy the website to the server when a push to main occurs that changes the code/ directory contents.
+#  This deploys to the gilkeidar.com domain specifically, and overwrites the current files served for it.
 name: Deploy To Apache Server
 run-name: Deploying to Apache Server by @${{ github.actor }}
 on:
