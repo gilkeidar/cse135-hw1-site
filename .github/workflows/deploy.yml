@@ -19,4 +19,4 @@ jobs:
           password: ${{ secrets.PASSWORD }}
           port: ${{ secrets.PORT }}
           source: "code/*"
-          target: $${ secrets.TARGET_PATH_DEFAULT }}
+          target: "/var/www/gilkeidar.com/public_html"
