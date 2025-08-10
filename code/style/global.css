@@ -65,10 +65,17 @@ pre {
 }
 
 body {
-    display: grid;
-    padding: 1dvh 1dvw;
-    grid-template-rows: max-content minmax(max-content, 70vh) max-content;
+    /* display: grid; */
+    /* padding: 1dvh 1dvw; */
+    /* grid-template-rows: max-content minmax(max-content, 70vh) max-content; */
+    /* gap: 1dvh; */
+    display: flex;
+    flex-direction: column;
     gap: 1dvh;
+    padding: 1dvh 1dvw;
+    min-height: 100dvh;
+    /* border: 1px solid black; */
+    /* justify-content: space-between; */
 }
 
 header {
@@ -113,6 +120,7 @@ main ul {
 }
 
 main {
+    flex: 1;
     padding: 1dvh 1dvw;
     background: var(--section-bg-color);
 }
