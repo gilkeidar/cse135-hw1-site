@@ -70,7 +70,7 @@
 //			[14 bytes filename][2 bytes inode block pointer (block ID)]
 //		Note:
 //			*	The filename can be at most 14 characters long. This means:
-//				If the length of the filename is < 14 characters, it will be
+//				If the length of the filename is &lt; 14 characters, it will be
 //				terminated with a \0 byte (0 byte).
 //				If the length of the filename == 14 characters, it will not be
 //				terminated with a \0 byte.
@@ -177,7 +177,7 @@ SMR R1, R0		        //	GO (R1's value is ignored)
 
 //	Pseudocode:
 //	byte * currEntry = dir_entry_page (0x3000) + 14 (after file name)
-//	for (byte i = 0; i < 16; i++, currEntry += 16) {
+//	for (byte i = 0; i &lt; 16; i++, currEntry += 16) {
 //		//	At start of each iteration, currEntry points at the inode block
 //		//	pointer of the current directory entry (index 14 out of 15)
 //		//	Check that file exists
@@ -203,7 +203,7 @@ SMR R1, R0		        //	GO (R1's value is ignored)
 LSP %HDP, dir_entry_page
 LDR R0, #14					//	R0 = low byte of currEntry
 LDR R1, #0					//	R1 = i = 0
-:for_loop					//	for (byte i = 0; i < 16; i++, currEntry += 16) {
+:for_loop					//	for (byte i = 0; i &lt; 16; i++, currEntry += 16) {
 LDR R2, NUM_DIR_ENTRIES		//	R2 = NUM_DIR_ENTRIES = 16
 SUB R3, R1, R2				//	R3 = R1 - R2 = i - 16
 BPL :after_for_loop			//	if i - 16 >= 0, skip for loop
