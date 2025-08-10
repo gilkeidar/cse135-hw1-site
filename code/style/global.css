@@ -1,0 +1,126 @@
+* {
+    padding: 0;
+    margin: 0;
+    font-family: 'Times New Roman', Times, serif;
+    box-sizing: border-box;
+    font-size: 1rem;
+}
+
+/*  CSS Variable definitions */
+:root {
+    /* Colors */
+    --code-color: #cccccc;
+    --code-bg-color: #1f1f1f;
+    --section-bg-color: beige;
+    --subsection-bg-color: lightblue;
+
+    /* Font sizes */
+    --h1-font-size: 3rem;
+    --h2-font-size: 2rem;
+    --h3-font-size: 1.5rem;
+    --p-font-size: 1.2rem;
+}
+
+h1 {
+    font-size: var(--h1-font-size);
+}
+h2 {
+    font-size: var(--h2-font-size);
+}
+h3 {
+    font-size: var(--h3-font-size);
+}
+
+p {
+    margin: 0 1dvw;
+    font-size: var(--p-font-size);
+    max-width: 100ch;
+}
+
+/* Ensure paragraphs don't immediately follow previous content. */
+p:nth-child(n + 2) {
+    margin-top: 1dvh;
+}
+
+/*  Taken from the MDN code demo    */
+pre, code {
+    background-color: var(--code-bg-color);
+    /* color: #cccccc; */
+    /* color: silver; */
+    color: var(--code-color);
+    border-radius: 3px;
+    font-family: 'Courier New', Courier, monospace;
+}
+
+code {
+    padding: 0 3px;
+}
+
+pre {
+    margin: 0 1dvw;
+    padding: 1dvh 1dvw;
+    max-width: fit-content;
+    max-height: 50dvh;
+    overflow-y: auto;
+}
+
+body {
+    display: grid;
+    padding: 1dvh 1dvw;
+    grid-template-rows: max-content minmax(max-content, 70vh) max-content;
+    gap: 1dvh;
+}
+
+header {
+    padding: 1dvh 1dvw;
+    background: var(--section-bg-color);
+}
+
+header h1, header h2 {
+    padding: 1dvh 1dvw;
+    font-family: sans-serif;
+}
+
+header nav {
+    background: var(--subsection-bg-color);
+    padding: 1dvh 1dvw;
+}
+
+ul:nth-child(n + 2) {
+    margin-top: 1dvh;
+}
+
+header nav ul {
+    list-style-type: none;
+    padding: 1dvh 1dvw;
+    margin: 0;
+    display: flex;
+    column-gap: 1dvw;
+}
+
+a {
+    font-size: var(--p-font-size);
+}
+
+li {
+    font-size: var(--p-font-size);
+}
+
+main ul {
+    /* border: 1px solid black; */
+    list-style-position: inside;
+    padding: 0 1dvw;
+}
+
+main {
+    padding: 1dvh 1dvw;
+    background: var(--section-bg-color);
+}
+
+footer {
+    padding: 1dvh 1dvw;
+    background: var(--section-bg-color);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
