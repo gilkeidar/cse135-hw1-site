@@ -21,7 +21,8 @@ jobs:
           password: ${{ secrets.PASSWORD }}
           port: ${{ secrets.PORT }}
           source: "code/*"
-          target: "/var/www/gilkeidar.com/public_html"
+          #target: "/var/www/gilkeidar.com/public_html"
+          target: ${{ secrets.TARGET_PATH_DEFAULT }}
           #  Copy the files to the target without the code/ directory (e.g., code/index.html will be copied to public_html/index.html
           #  instead of public_html/code/index.html)
           strip_components: 1
@@ -32,4 +33,5 @@ jobs:
           username: ${{ secrets.USERNAME }}
           password: ${{ secrets.PASSWORD }}
           port: ${{ secrets.PORT }}
-          script: cd /var/www/gilkeidar.com/public_html/cgi-bin/; chmod a+x *.pl
+          script: cd ${{ secrets.SCRIPT_PATH }}; chmod a+x *.pl
+          #script: cd /var/www/gilkeidar.com/public_html/cgi-bin/; chmod a+x *.pl
