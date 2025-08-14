@@ -141,6 +141,11 @@ main section {
     gap: 1dvh;
 }
 
+#hw2-language-link-group {
+    display: flex;
+    gap: 1dvh 1dvw;
+}
+
 footer {
     padding: 1dvh 1dvw;
     background: var(--section-bg-color);
