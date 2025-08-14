@@ -56,6 +56,10 @@ code {
     padding: 0 3px;
 }
 
+pre code {
+    padding: 0;
+}
+
 pre {
     margin: 0 1dvw;
     padding: 1dvh 1dvw;

