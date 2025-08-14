@@ -123,6 +123,22 @@ main {
     flex: 1;
     padding: 1dvh 1dvw;
     background: var(--section-bg-color);
+    display: flex;
+    flex-direction: column;
+    gap: 1dvh;
+}
+
+main section {
+    /* background: lightyellow; */
+    padding: 1dvh 1dvw;
+    border-radius: 5px;
+    border: 1px solid lightgray;
+}
+
+#homework {
+    display: flex;
+    flex-direction: column;
+    gap: 1dvh;
 }
 
 footer {
