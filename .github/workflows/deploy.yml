@@ -25,3 +25,5 @@ jobs:
           #  Copy the files to the target without the code/ directory (e.g., code/index.html will be copied to public_html/index.html
           #  instead of public_html/code/index.html)
           strip_components: 1
+      - name: Ensure script files are executable
+        run: cd cgi-bin; chmod a+x *.pl
