@@ -147,7 +147,12 @@ main section {
 
 #hw2-language-link-group {
     display: flex;
+    flex-wrap: wrap;
     gap: 1dvh 1dvw;
+}
+
+#hw2-language-link-group > section {
+    flex: 1;
 }
 
 footer {
