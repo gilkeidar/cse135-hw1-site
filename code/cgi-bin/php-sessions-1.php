@@ -1,7 +1,7 @@
 <?php
     session_start();
-    if (isset($_GET['username'])) {
-        $_SESSION['username'] = $_GET['username'];
+    if (isset($_POST['username'])) {
+        $_SESSION['username'] = $_POST['username'];
     }
 ?>
 <!DOCTYPE html>
