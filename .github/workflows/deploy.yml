@@ -32,4 +32,4 @@ jobs:
           username: ${{ secrets.USERNAME }}
           password: ${{ secrets.PASSWORD }}
           port: ${{ secrets.PORT }}
-          script: cd ${{ secrets.SCRIPT_PATH }}; chmod a+x *.pl
+          script: cd ${{ secrets.SCRIPT_PATH }}; chmod a+x *.pl *.py
