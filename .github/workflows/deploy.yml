@@ -13,6 +13,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - name: Execute script using SSH
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          password: ${{ secrets.PASSWORD }}
+          port: ${{ secrets.PORT }}
+          # Change ownership of public_html directory to the githubaction user.
+          script: echo ${{ secrets.PASSWORD }} | sudo chown -R githubaction:githubaction ${{secrets.TARGET_PATH_DEFAULT}}/*
       - name: Copy files via SSH
         uses: appleboy/scp-action@v1
         with:
@@ -33,6 +42,6 @@ jobs:
           password: ${{ secrets.PASSWORD }}
           port: ${{ secrets.PORT }}
           # Enter CGI script directory; ensure all .pl and .py files are
-          # executable; then change ownership of cgi-bin directory to user 
+          # executable; then change ownership of public_html directory to user 
           # www-data
-          script: cd ${{ secrets.SCRIPT_PATH }}; chmod a+x *.pl *.py; echo ${{ secrets.PASSWORD }} | sudo chown www-data:www-data .
+          script: cd ${{ secrets.SCRIPT_PATH }}; chmod a+x *.pl *.py; echo ${{ secrets.PASSWORD }} | sudo -R chown www-data:www-data ../*
