@@ -1,4 +1,5 @@
 #!/usr/bin/python3
+import os
 from py_session_manager import SessionManager, SessionData
 
 #   Set Response Headers
