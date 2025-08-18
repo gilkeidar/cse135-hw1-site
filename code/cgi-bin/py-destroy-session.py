@@ -1,32 +1,25 @@
 #!/usr/bin/python3
-import sqlite3
-import os
+from py_session_manager import SessionManager, SessionData
 
 #   Set Response Headers
+
+#   1.  Create a SessionManager and connect to the database file 
+#       "py-sessions.db"
+session_manager = SessionManager("py-sessions.db")
+
+#   2.  Does the HTTP request contain a session cookie?
+COOKIE_PREFIX = f"{SessionManager.SESSION_COOKIE_NAME}="
+cookie_index = os.environ["HTTP_COOKIE"].find(COOKIE_PREFIX)
+if cookie_index != -1:
+    #   1.  Extract the cookie's value (session id)
+    cookie_value = os.environ["HTTP_COOKIE"][cookie_index + len(COOKIE_PREFIX):].split(";")[0]
+    session_manager.deleteSession(cookie_value)
+
+session_manager.closeSession()
+
 print("Content-Type: text/html\n")
 
-#   1.  Connect to the database file "py-sessions.db".
-con = sqlite3.connect("py-sessions.db")
-cur = con.cursor()
-#   2.  Create a database table "sessions" if it doesn't already exist in
-#       py-sessions.db.
-res = cur.execute("SELECT name FROM sqlite_master WHERE name='sessions'")
-if res.fetchone() is None:
-    cur.execute("CREATE TABLE sessions(sessionID, name)")
-
-#   3.  Define variable session_id.
-session_id = ""
-#   4.  If request r contains a Cookie header with value "SESSID=x"
-#   *   This means that we've already assigned this client a cookie, and so
-#       there should exist a database entry for this client's session id.
-cookie_index = os.environ["HTTP_COOKIE"].find("SESSID=")
-if cookie_index != -1:
-    cookie_value = os.environ["HTTP_COOKIE"][cookie_index + len("SESSID="):].split(";")[0]
-#       1.  session_id = x
-    session_id = cookie_value
-#       2.  Delete record with this session id.
-    cur.execute("DELETE FROM sessions WHERE sessionID = ?", (session_id, ))
-    con.commit()
+#   Set Response message body (HTML payload)
 
 html = '''
 <!DOCTYPE html>
@@ -45,3 +38,5 @@ html = '''
 </html>
 '''
 print(html)
+
+
