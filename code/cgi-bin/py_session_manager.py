@@ -20,8 +20,6 @@ class SessionData:
 class SessionManager:
     #   Name of session cookie (name in HTTP Cookie and Set-Cookie headers)
     SESSION_COOKIE_NAME = "SESSID"
-    #   Name of database table
-    TABLE_NAME = "sessions"
 
     def __init__(self, databasePath):
         #   1.  Connect to the database file at databasePath.
@@ -33,16 +31,14 @@ class SessionManager:
         res = self.__cur.execute("SELECT name FROM sqlite_master WHERE name=?",
                                 (SessionManager.TABLE_NAME,))
         if res.fetchone() is None:
-            self.__cur.execute("CREATE TABLE ?(sessionID, name)", 
-                                (SessionManager.TABLE_NAME,))
+            self.__cur.execute("CREATE TABLE sessions(sessionID, name)")
     
     def createSession(self):
         #   Create a new session and return its SessionData object.
         #   1.  Create a new SessionData object.
         newSession = SessionData()
         #   2.  Store the session object in the database.
-        self.__cur.execute("INSERT INTO ? VALUES(?, ?)", 
-                           (SessionManager.TABLE_NAME, newSession))
+        self.__cur.execute("INSERT INTO sessions VALUES(?, ?)", (newSession.session_id, newSession.name))
         self.__con.commit()
         #   3.  Set session cookie for the client.
         print(f"Set-Cookie: {SessionManager.SESSION_COOKIE_NAME}={newSession.session_id}")
@@ -52,7 +48,7 @@ class SessionManager:
     def findSessionInDatabase(self, session_id):
         #   Attempt to find a session row in the database with the given session
         #   id.
-        res = self.__cur.execute("SELECT * FROM ? WHERE sessionID = ?", (SessionManager.TABLE_NAME, session_id))
+        res = self.__cur.execute("SELECT * FROM sessions WHERE sessionID = ?", (session_id,))
         res = res.fetchone()
         if res is None:
             return None
@@ -94,8 +90,8 @@ class SessionManager:
                 #   1.  Update session to have new name value.
                 session.name = name
                 #   2.  Update session object in database.
-                self.__cur.execute("UPDATE ? SET name = ? WHERE sessionID = ?",
-                        (SessionManager.TABLE_NAME, session.name, session_id))
+                self.__cur.execute("UPDATE sessions SET name = ? WHERE sessionID = ?",
+                        (session.name, session_id))
                 self.__con.commit()
                 return session
         return None
@@ -103,8 +99,8 @@ class SessionManager:
     def deleteSession(self, session_id):
         if session_id is not None:
             #   1.  Delete session object in database with the given session_id.
-            self.__cur.execute("DELETE FROM ? WHERE sessionID = ?",
-                               (SessionManager.TABLE_NAME, session_id))
+            self.__cur.execute("DELETE FROM sessions WHERE sessionID = ?",
+                               (session_id,))
             self.__con.commit()
             #   2.  Tell client to clear the session cookie.
             print(f"Set-Cookie: {SessionManager.SESSION_COOKIE_NAME}=; Expires=Thu, 01 Jan 1970 00:00:00 GMT")
