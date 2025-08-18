@@ -21,7 +21,7 @@ session_id = ""
 #       there should exist a database entry for this client's session id.
 cookie_index = os.environ["HTTP_COOKIE"].find("SESSID=")
 if cookie_index != -1:
-    cookie_value = os.environ["HTTP_COOKIE"][cookie_index:].split(";")[0]
+    cookie_value = os.environ["HTTP_COOKIE"][cookie_index + len("SESSID="):].split(";")[0]
 #       1.  session_id = x
     session_id = cookie_value
 #       2.  Delete record with this session id.
