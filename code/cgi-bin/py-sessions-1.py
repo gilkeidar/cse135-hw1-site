@@ -27,7 +27,7 @@ name = DEFAULT_NAME
 cookie_index = os.environ["HTTP_COOKIE"].find("SESSID=")
 if cookie_index != -1:
 	cookie_value = os.environ["HTTP_COOKIE"][cookie_index + len("SESSID="):].split(";")[0]
-	print(f"Test-Header-1: cookie_value={cookie_value}")
+	# print(f"Test-Header-1: cookie_value={cookie_value}")
 #       1.  session_id = x
 	session_id = cookie_value
 #       2.  If there exists an entry in the sessions database with sessionID
@@ -36,7 +36,7 @@ if cookie_index != -1:
 #           record in the database.
 	res = cur.execute("SELECT name FROM sessions WHERE sessionID = ?", (session_id, ))
 	res = res.fetchone()
-	print(f"Test-Header-2: result: {res}")
+	# print(f"Test-Header-2: result: {res}")
 #           1.  name = database.get(session_id)["name"]
 #       3.  Otherwise:
 #       *   This means that the client sent an incorrect session ID, but we can
