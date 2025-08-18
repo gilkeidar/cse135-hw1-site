@@ -34,16 +34,18 @@ if cookie_index != -1:
 #       *   This means that the session_id of this client is valid and has a
 #           record in the database.
 	res = cur.execute("SELECT name FROM sessions WHERE sessionID = ?", (session_id, ))
-	name = res.fetchone()
+	res = res.fetchone()
 #           1.  name = database.get(session_id)["name"]
 #       3.  Otherwise:
 #       *   This means that the client sent an incorrect session ID, but we can
 #			still use it. Create a new session.
 #			1.	database.create(session_id, {"name": DEFAULT_NAME})
-	if name is None:
+	if res is None:
 		name = DEFAULT_NAME
 		cur.execute("INSERT INTO sessions VALUES(?, ?)", (session_id, DEFAULT_NAME))
 		con.commit()
+	else:
+		name = res[0]
 #	5.	Otherwise (r does not contain a Cookie header with value "SESSID=x"):
 #	*	This means we need to create a new session for the client and send the
 #		client a cookie with their session ID.
@@ -71,7 +73,7 @@ if os.environ["REQUEST_METHOD"].find("POST") != -1:
 	username_ind = r_payload.find("username")
 	if username_ind != -1:
 #			1.	name = x
-		name = r_payload[username_ind + len("username"):]
+		name = r_payload[username_ind + len("username="):]
 #			2.	database.update(session_id, {"name": name})
 		cur.execute("UPDATE sessions SET name = ? WHERE sessionID = ?", (name, session_id))
 
