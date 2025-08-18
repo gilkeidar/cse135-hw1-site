@@ -33,7 +33,7 @@ if cookie_index != -1:
 #           being session_id:
 #       *   This means that the session_id of this client is valid and has a
 #           record in the database.
-	res = cur.execute("SELECT name FROM sessions WHERE sessionID=Values(?)", session_id)
+	res = cur.execute("SELECT name FROM sessions WHERE sessionID = VALUES(?)", session_id)
 	name = res.fetchone()
 #           1.  name = database.get(session_id)["name"]
 #       3.  Otherwise:
