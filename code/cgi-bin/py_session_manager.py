@@ -28,8 +28,7 @@ class SessionManager:
         self.__cur = self.__con.cursor()
         #   3.  Create a database table "sessions" if it doesn't already exist
         #       in the database file.
-        res = self.__cur.execute("SELECT name FROM sqlite_master WHERE name=?",
-                                (SessionManager.TABLE_NAME,))
+        res = self.__cur.execute("SELECT name FROM sqlite_master WHERE name='sessions'")
         if res.fetchone() is None:
             self.__cur.execute("CREATE TABLE sessions(sessionID, name)")
     
