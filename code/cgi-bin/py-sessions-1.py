@@ -4,4 +4,4 @@
 print("Content-Type: text/html\n")
 
 #   Set Response message body (HTML payload)
-print("test ")
+print("test  ")
