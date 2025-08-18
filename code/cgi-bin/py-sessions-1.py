@@ -58,6 +58,7 @@ else:
 #		2.	Create a new session record in the database.
 #			1.	database.create(session_id, {"name": DEFAULT_NAME})
 	cur.execute("INSERT INTO sessions VALUES(?, ?)", (session_id, DEFAULT_NAME))
+	con.commit()
 #		3.	Set cookie for client.
 #			1.	print(f"Set-Cookie: SESSID={session_id}")
 	print(f"Set-Cookie: SESSID={session_id}")
