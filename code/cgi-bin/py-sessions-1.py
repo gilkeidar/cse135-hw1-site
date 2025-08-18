@@ -26,7 +26,7 @@ name = DEFAULT_NAME
 #       there should exist a database entry for this client's session id.
 cookie_index = os.environ["HTTP_COOKIE"].find("SESSID=")
 if cookie_index != -1:
-	cookie_value = os.environ["HTTP_COOKIE"][cookie_index:].split(";")[0]
+	cookie_value = os.environ["HTTP_COOKIE"][cookie_index + len("SESSID="):].split(";")[0]
 	print(f"Test-Header-1: cookie_value={cookie_value}")
 #       1.  session_id = x
 	session_id = cookie_value
