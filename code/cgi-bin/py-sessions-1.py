@@ -78,6 +78,7 @@ if os.environ["REQUEST_METHOD"].find("POST") != -1:
 		name = r_payload[username_ind + len("username="):]
 #			2.	database.update(session_id, {"name": name})
 		cur.execute("UPDATE sessions SET name = ? WHERE sessionID = ?", (name, session_id))
+		con.commit()
 
 #	Close database connection
 con.close()
