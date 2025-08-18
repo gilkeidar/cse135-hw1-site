@@ -73,7 +73,7 @@ if os.environ["REQUEST_METHOD"].find("POST") != -1:
 #			1.	name = x
 		name = r_payload[username_ind + len("username"):]
 #			2.	database.update(session_id, {"name": name})
-		cur.execute("UPDATE sessions SET name = VALUES(?) WHERE sessionID=VALUES(?)", (name, session_id))
+		cur.execute("UPDATE sessions SET name = ? WHERE sessionID = ?", (name, session_id))
 
 print("Content-Type: text/html\n")
 
