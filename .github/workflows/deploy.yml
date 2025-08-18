@@ -32,4 +32,7 @@ jobs:
           username: ${{ secrets.USERNAME }}
           password: ${{ secrets.PASSWORD }}
           port: ${{ secrets.PORT }}
+          # Enter CGI script directory; ensure all .pl and .py files are
+          # executable; then change ownership of cgi-bin directory to user 
+          # www-data
           script: cd ${{ secrets.SCRIPT_PATH }}; chmod a+x *.pl *.py; echo ${{ secrets.PASSWORD }} | sudo chown www-data:www-data .
