@@ -52,8 +52,7 @@ class SessionManager:
     def findSessionInDatabase(self, session_id):
         #   Attempt to find a session row in the database with the given session
         #   id.
-        res = self.__cur.execute("SELECT * FROM ? WHERE sessionID = ?",
-                                 (SessionManager.TABLE_NAME, session_id))
+        res = self.__cur.execute("SELECT * FROM ? WHERE sessionID = ?", (SessionManager.TABLE_NAME, session_id))
         res = res.fetchone()
         if res is None:
             return None
