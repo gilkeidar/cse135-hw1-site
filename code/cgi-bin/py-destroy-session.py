@@ -1,5 +1,6 @@
 #!/usr/bin/python3
 import sqlite3
+import os
 
 #   Set Response Headers
 print("Content-Type: text/html\n")
