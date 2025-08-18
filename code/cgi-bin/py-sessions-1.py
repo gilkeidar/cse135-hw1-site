@@ -22,8 +22,6 @@ else:
     #   HTTP request does not contain a session cookie.
     session = session_manager.openSession(None)
 
-print(f"Test-Header-1: session={session}")
-
 #   3.  Update session data if the request method is POST and the payload
 #       contains a "username="" string.
 request_method = os.environ["REQUEST_METHOD"]

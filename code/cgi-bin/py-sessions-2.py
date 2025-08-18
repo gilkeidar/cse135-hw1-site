@@ -22,8 +22,6 @@ else:
     #   HTTP request does not contain a session cookie.
     session = session_manager.openSession(None)
 
-print(f"Test-Header-1: session={session}")
-
 session_manager.closeSession()
 
 print("Content-Type: text/html\n")
