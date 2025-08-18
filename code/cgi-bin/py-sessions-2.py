@@ -71,10 +71,10 @@ html_start = '''
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Python Session 1</title>
+        <title>Python Session 2</title>
     </head>
     <body>
-        <h1>Python Sessions Page 1</h1>
+        <h1>Python Sessions Page 2</h1>
 '''
 print(html_start)
 
@@ -83,7 +83,7 @@ print(f"<p><strong>Name: </strong> {name}</p>")
 html_end = '''
 <br>
 <br>
-<a href="/cgi-bin/py-sessions-2.py">Sessions Page 2</a>
+<a href="/cgi-bin/py-sessions-1.py">Sessions Page 1</a>
 <br>
 <a href="/py-cgiform.html">CGI Form</a>
 <br>
