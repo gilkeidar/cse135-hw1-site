@@ -14,7 +14,7 @@
         <?php
             print "<p><strong>Name: </strong>";
             if (isset($_SESSION['username'])) {
-                //  Avoid XSS
+                //  Avoid XSS attack
                 echo htmlspecialchars($_SESSION['username'], ENT_QUOTES, 'UTF-8');
             }
             else {
