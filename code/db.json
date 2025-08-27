@@ -1,0 +1,29 @@
+{
+  "posts": [
+    {
+      "id": "1",
+      "title": "a title",
+      "views": 100
+    },
+    {
+      "id": "2",
+      "title": "another title",
+      "views": 200
+    },
+    {
+      "id": "1234567",
+      "title": "a post that was posted with POST",
+      "views": 1701
+    },
+    {
+      "id": "1701",
+      "mouse-clicks": [
+        "(2,4)"
+      ]
+    }
+  ],
+  "comments": [],
+  "profile": {
+    "name": "typicode"
+  }
+}
