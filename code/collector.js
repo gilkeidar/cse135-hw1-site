@@ -237,7 +237,10 @@ async function loadEventHandler(event) {
 }
 
 addEventListener("load", (event) => {
-    setTimeout(loadEventHandler(event), 0);
+    // setTimeout(loadEventHandler(event), 0);
+    setTimeout(() => {
+        console.log(window.performance.timing.loadEventEnd);
+    }, 0);
 });
 
 
