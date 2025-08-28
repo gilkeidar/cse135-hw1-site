@@ -168,7 +168,7 @@ async function createUserSession() {
 
     //  6.  If the request was successful, clear the UserSession object from
     //      localStorage.
-    if (response.status() == 201) {
+    if (response.status == 201) {
         console.log("Response succeeded.");
 
         localStorage.removeItem(USER_SESSION);
