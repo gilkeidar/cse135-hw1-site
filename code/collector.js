@@ -65,14 +65,38 @@ function sendActivityBurstObject() {
  * Send the UserSession object in localStorage to the server if it exists.
  * Then, clear the object in localStorage.
  */
-function sendUserSessionObject() {
+async function sendUserSessionObject() {
     console.log("Sending UserSession object to server (if it exists).");
+    let user_session_string = localStorage.getItem(USER_SESSION);
+
+    if (!user_session_string)   return;
+
+    const response = await fetch(USER_SESSION_ENDPOINT, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: user_session_string
+    });
+
+    //  6.  If the request was successful, clear the UserSession object from
+    //      localStorage.
+    if (response.status == 201) {
+        console.log("Response succeeded.");
+
+        localStorage.removeItem(USER_SESSION);
+    }
+    else {
+        console.error(`Server responded with code ${response.status}.`
+                + ` Not removing user session object.`);
+    }
 }
 
 /**
  * Creates a StaticData object, fills it, and returns it.
  */
 function getStaticData() {
+    console.log("Getting static data of this session.");
     let static_data = {};
 
     //  1.  Get the user agent string
@@ -115,6 +139,7 @@ function getStaticData() {
 }
 
 function getPerformanceData() {
+    console.log("Getting performance data of this session.");
     let loadStart = window.performance.timing.loadEventStart;
     let loadEnd = window.performance.timing.loadEventEnd;
     let loadTime = loadEnd - loadStart;
@@ -158,39 +183,30 @@ async function createUserSession() {
     //  5.  Attempt to send the UserSession object to /json/user-session with a 
     //      POST request.
 
-    const response = await fetch(USER_SESSION_ENDPOINT, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: user_session_string
-    });
-
-    //  6.  If the request was successful, clear the UserSession object from
-    //      localStorage.
-    if (response.status == 201) {
-        console.log("Response succeeded.");
-
-        localStorage.removeItem(USER_SESSION);
-    }
+    
 }
 
 addEventListener("load", async (event) => {
     console.log("Page has loaded.");
+    console.log(window.performance.timing);
 
     //  Determine whether a user session already exists
     if (!localStorage.getItem(USER_ID)) {
         //  This means that this is an unknown client. A new user ID and session
         //  will need to be created.
+        console.log("Unknown user - creating new user ID.");
 
         //  1.  Generate a new user_id and store it in localStorage.
         user_id = generateID();
+        
+        console.log("Storing user ID in localStorage.");
         localStorage.setItem(USER_ID, user_id);
     }
 
     if (!localStorage.getItem(SESSION_ID)) {
         //  This means that there is no current user session. A new user session
         //  will need to be created.
+        console.log("No current user session - creating one.");
 
         //  1.  Create a new user session.
         await createUserSession();
@@ -201,8 +217,10 @@ addEventListener("load", async (event) => {
         //  be sent to the server before other data is sent.
         //  It's possible that this previous user session has expired and so a
         //  new user session should be created.
+        console.log("There is a past user session.");
 
         //  1.  Send any leftover data of this user session to the server.
+        console.log("Sending left-over data from this session to the server.");
         sendUserSessionObject();
         sendActivityBurstObject();
 
@@ -213,6 +231,7 @@ addEventListener("load", async (event) => {
 
         if (isNaN(session_start) 
             || Math.abs(page_load_start - session_start) > MAX_SESSION_TIME) {
+            console.log("Past session either invalid or expired - creating new session.");
             await createUserSession();
         }
     }
