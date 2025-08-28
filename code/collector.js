@@ -186,8 +186,8 @@ async function createUserSession() {
 }
 
 async function loadEventHandler(event) {
-console.log("Page has loaded.");
-    console.log(window.performance.timing.loadEnd);
+    console.log("Page has loaded.");
+    console.log(window.performance.timing.loadEventEnd);
 
     //  Determine whether a user session already exists
     if (!localStorage.getItem(USER_ID)) {
