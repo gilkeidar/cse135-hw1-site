@@ -237,7 +237,7 @@ console.log("Page has loaded.");
 }
 
 addEventListener("load", async (event) => {
-    setTimeout(await loadEventHandler(e), 0);
+    setTimeout(await loadEventHandler(event), 0);
 });
 
 
