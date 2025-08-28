@@ -182,8 +182,7 @@ async function createUserSession() {
 
     //  5.  Attempt to send the UserSession object to /json/user-session with a 
     //      POST request.
-
-    
+    await sendUserSessionObject();
 }
 
 addEventListener("load", async (event) => {
@@ -221,8 +220,8 @@ addEventListener("load", async (event) => {
 
         //  1.  Send any leftover data of this user session to the server.
         console.log("Sending left-over data from this session to the server.");
-        sendUserSessionObject();
-        sendActivityBurstObject();
+        await sendUserSessionObject();
+        await sendActivityBurstObject();
 
         //  2.  If session_start doesn't exist in localStorage or if it has
         //      expired, create a new UserSession.
