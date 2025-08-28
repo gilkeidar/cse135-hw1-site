@@ -240,6 +240,8 @@ addEventListener("load", (event) => {
     // setTimeout(loadEventHandler(event), 0);
     setTimeout(() => {
         console.log(window.performance.timing.loadEventEnd);
+
+        setTimeout(loadEventHandler(event).then(() => {console.log("Done");}), 0);
     }, 0);
 });
 
