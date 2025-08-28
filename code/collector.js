@@ -236,12 +236,65 @@ async function loadEventHandler(event) {
     }
 }
 
+function loadEventHandler2(event) {
+    console.log("loadEventHandler2()");
+    console.log(window.performance.timing.loadEventEnd);
+
+    //  Determine whether a user session already exists
+    if (!localStorage.getItem(USER_ID)) {
+        console.log("Unknown user - creating new user ID.");
+
+        user_id = generateID();
+
+        console.log(`Storing user ID ${user_id} in localStorage.`);
+        localStorage.setItem(USER_ID, user_id);
+    }
+
+    if (!localStorage.getItem(SESSION_ID)) {
+        console.log("No current user session - creating one.");
+
+        try {
+            createUserSession();
+        } catch (error) {
+            console.error(error);
+        }
+    }
+    else {
+        console.log("There is a past user session.");
+
+        console.log("Sending left-over data from this session to the server.");
+
+        try {
+            sendUserSessionObject();
+            sendActivityBurstObject();
+        } catch (error) {
+            console.error(error);
+        }
+
+        session_start = Date.parse(localStorage.getItem(SESSION_START));
+        page_load_start = new Date();
+
+        if (isNaN(session_start) 
+            || Math.abs(page_load_start - session_start) > MAX_SESSION_TIME) {
+            console.log("Past session either invalid or expired - creating new session.");
+            try {
+                createUserSession();
+            } catch (error) {
+                console.error(error);
+            }
+        }
+    }
+}
+
 addEventListener("load", (event) => {
     // setTimeout(loadEventHandler(event), 0);
+    console.log("Page has loaded.");
     setTimeout(() => {
+        console.log("Page load event completed.")
         console.log(window.performance.timing.loadEventEnd);
 
-        setTimeout(loadEventHandler(event).then(() => {console.log("Done");}), 0);
+        setTimeout(loadEventHandler2, 0, event);
+        // setTimeout(loadEventHandler(event).then(() => {console.log("Done");}), 0);
     }, 0);
 });
 
