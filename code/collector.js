@@ -236,8 +236,8 @@ async function loadEventHandler(event) {
     }
 }
 
-addEventListener("load", async (event) => {
-    setTimeout(await loadEventHandler(event), 0);
+addEventListener("load", (event) => {
+    setTimeout(loadEventHandler(event), 0);
 });
 
 
