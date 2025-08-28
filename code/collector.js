@@ -185,9 +185,9 @@ async function createUserSession() {
     await sendUserSessionObject();
 }
 
-addEventListener("load", async (event) => {
-    console.log("Page has loaded.");
-    console.log(window.performance.timing);
+async function loadEventHandler(event) {
+console.log("Page has loaded.");
+    console.log(window.performance.timing.loadEnd);
 
     //  Determine whether a user session already exists
     if (!localStorage.getItem(USER_ID)) {
@@ -234,6 +234,10 @@ addEventListener("load", async (event) => {
             await createUserSession();
         }
     }
+}
+
+addEventListener("load", async (event) => {
+    setTimeout(await loadEventHandler(e), 0);
 });
 
 
