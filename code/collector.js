@@ -465,7 +465,13 @@ function getActivityFromClickEvent(event) {
 
 function getActivityFromScrollEvent(event) {
     return {
-        target: identifyTarget(event.target)
+        target: identifyTarget(event.target),
+        scrollCoordinates: {
+            scrollWidth: event.target.scrollingElement.scrollWidth,
+            scrollHeight: event.target.scrollingElement.scrollHeight,
+            scrollLeft: event.target.scrollingElement.scrollLeft,
+            scrollTop: event.target.scrollingElement.scrollTop
+        }
     };
 }
 
