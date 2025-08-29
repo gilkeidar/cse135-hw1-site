@@ -463,6 +463,12 @@ function getActivityFromClickEvent(event) {
     };
 }
 
+function getActivityFromScrollEvent(event) {
+    return {
+
+    };
+}
+
 function getActivityFromKeyEvent(event) {
     return {
         key: event.key
@@ -488,6 +494,8 @@ function getActivityFromEvent(event) {
         case "mouseover":
         case "mousemove":
             return getActivityFromClickEvent(event);
+        case "scroll":
+            return getActivityFromScrollEvent(event);
         case "keydown":
         case "keypress":
         case "keyup":
@@ -535,10 +543,11 @@ addEventListener("load", (event) => {
             //  Mouse events
             "click", "contextmenu", "dblclick", "mousedown", "mouseup",
             "mouseenter", "mouseleave", "mouseout", "mouseover",  "mousemove",
+            "scroll",
             // "click", "contextmenu", "dblclick", "mousedown", "mouseenter", 
             // "mouseleave",
             // "mousemove", "mouseout", "mouseover", "mouseup",
-            // //  Key events
+            //  Key events
             "keydown", "keypress", "keyup"
         ];
 
