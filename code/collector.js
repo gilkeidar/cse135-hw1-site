@@ -390,13 +390,48 @@ addEventListener("error", (event) => {
     console.log("Error occurred.");
     console.log(event);
     activityEventHandler(event, {
-
+        message: event.message,
+        filename: event.filename,
+        lineno: event.lineno,
+        colno: event.colno,
+        error: event.error
     });
 });
 
-addEventListener("click", (event) => {
+addEventListener("unhandledrejection", (event) => {
+    console.log("Unhandled rejection occurred.");
     console.log(event);
     activityEventHandler(event, {
 
+    });
+})
+
+addEventListener("click", (event) => {
+    console.log(event);
+
+    //  Identify which button was clicked
+    let button;
+    switch (event.button) {
+        case 0:
+            button = "left";
+            break;
+        case 2:
+            button = "right";
+            break;
+        default:
+            button = "unknown";
+    }
+
+    activityEventHandler(event, {
+        //  Cursor position (coordinates)
+        coordinates: {
+            clientX : event.clientX,
+            clientY : event.clientY
+        },
+
+        //  Clicks (and which mouse button was clicked)
+        button: button,
+
+        //  Scrolling (coordinates of the scroll)
     });
 })
