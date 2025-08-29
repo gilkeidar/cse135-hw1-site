@@ -440,6 +440,14 @@ function identifyMouseButton(button_index) {
     }
 }
 
+function identifyTarget(target) {
+    return {
+        id: target.id,
+        className: target.className,
+        nodeName: target.nodeName
+    }
+}
+
 function getMouseCoordinates(event) {
     return {
         clientX : event.clientX,
@@ -451,7 +459,7 @@ function getActivityFromClickEvent(event) {
     return {
         coordinates: getMouseCoordinates(event),
         button: identifyMouseButton(event.button),
-        target: event.target
+        target: identifyTarget(event.target)
     };
 }
 
