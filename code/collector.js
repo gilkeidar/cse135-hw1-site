@@ -534,6 +534,8 @@ function getActivityFromEvent(event) {
             return getActivityFromPageVisibilityChange(event);
         case "console_error":
             return {arguments: event.arguments};
+        case "idleend":
+            return {idle_duration: event.idle_duration};
         default:
             return {};
     }
@@ -541,7 +543,7 @@ function getActivityFromEvent(event) {
 
 function idleStartEventHandler() {
     if (!isIdle && Date.now() - last_activity_time >= 2000) {
-        console.log("Idle Start Event!");
+        console.log("idlestart event");
         isIdle = true;
 
         activityEventHandler({
@@ -569,6 +571,7 @@ function activityEventHandler(event) {
     if (userActivityEvents.includes(event.type)) {
         //  This event represents user activity.
         if (isIdle) {
+            console.log("idleend event");
             //  Idle period has ended; log "idleend" event.
             isIdle = false;
 
