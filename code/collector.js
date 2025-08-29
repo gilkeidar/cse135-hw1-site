@@ -513,6 +513,7 @@ function getActivityFromEvent(event) {
         case "keyup":
             return getActivityFromKeyEvent(event);
         case "beforeunload":
+        case "pagehide":
             return getActivityFromPageExit(event);
         default:
             return {};
@@ -565,7 +566,7 @@ addEventListener("load", (event) => {
             "keydown", "keypress", "keyup",
 
             //  Page Entry / Exit events
-            "beforeunload"
+            "beforeunload", "pagehide"
         ];
 
         //  Setup activity event handlers for each of the built-in continuous 
