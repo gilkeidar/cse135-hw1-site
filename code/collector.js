@@ -482,8 +482,9 @@ function getActivityFromKeyEvent(event) {
 }
 
 function getActivityFromPageExit(event) {
+    let userEnteredPage = document.visibilityState == "visible";
     return {
-        
+        userAction: userEnteredPage ? "Entered Page" : "Exited Page"
     };
 }
 
@@ -514,7 +515,9 @@ function getActivityFromEvent(event) {
             return getActivityFromKeyEvent(event);
         case "beforeunload":
         case "pagehide":
-            return getActivityFromPageExit(event);
+            return {};
+        case "visibilitychange":
+            return getActivityFromPageVisibilityChange(event);
         default:
             return {};
     }
@@ -566,7 +569,7 @@ addEventListener("load", (event) => {
             "keydown", "keypress", "keyup",
 
             //  Page Entry / Exit events
-            "beforeunload", "pagehide"
+            "beforeunload", "pagehide", "visibilitychange"
         ];
 
         //  Setup activity event handlers for each of the built-in continuous 
