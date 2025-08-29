@@ -442,9 +442,9 @@ function identifyMouseButton(button_index) {
 
 function identifyTarget(target) {
     return {
-        id: target.id,
-        className: target.className,
-        nodeName: target.nodeName
+        id: target.hasOwnProperty("id") ? target.id : "",
+        className: target.hasOwnProperty("className") ? target.className : "",
+        nodeName: target.hasOwnProperty("nodeName") ? target.nodeName : ""
     }
 }
 
