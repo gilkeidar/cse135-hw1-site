@@ -168,6 +168,12 @@ console.error = function() {
     //     }
     // );
 
+    //  Simulate event handling
+    activityEventHandler({
+        type: "console_error",
+        arguments: arguments
+    });
+
     return _error.apply(console, arguments);
 }
 
@@ -519,6 +525,8 @@ function getActivityFromEvent(event) {
             // return {};
         case "visibilitychange":
             return getActivityFromPageVisibilityChange(event);
+        case "console_error":
+            return {arguments: event.arguments};
         default:
             return {};
     }
