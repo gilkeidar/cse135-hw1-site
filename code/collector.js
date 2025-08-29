@@ -374,7 +374,7 @@ class ActivityEventLogger {
         let event_time = Date.now();
 
         //      3.  Get event info object for e.
-        let event_info = this.getEventInfo(e);
+        let event_info = getEventInfo(e);
 
         let activityData = new ActivityData(event_name, event_time, event_info);
 
@@ -386,8 +386,123 @@ class ActivityEventLogger {
         this.writeActivityBurstToLocalStorage();
     }
 
-    getEventInfo(e) {
+    static getErrorEventInfo(e) {
+        return {
+            message: event.message,
+            filename: event.filename,
+            lineno: event.lineno,
+            colno: event.colno,
+            error: event.error
+        };
+    }
+
+    static getMouseCoordinates(e) {
+        return {
+            clientX: e.clientX,
+            clientY: e.clientY
+        };
+    }
+
+    static identifyMouseButton(button_index) {
+        //  Identify the mouse button based on its button_index in a mouse
+        //  event.
+        switch (button_index) {
+            case 0:
+                return "left";
+            case 1:
+                return "middle";
+            case 2:
+                return "right";
+            default:
+                return "unknown";
+        }
+    }
+
+    static identifyTarget(target) {
+        return {
+            id: target.id,
+            className: target.className,
+            nodeName: target.nodeName
+        };
+    }
+
+    static getMouseEventInfo(e) {
+        return {
+            coordinates: getMouseCoordinates(e),
+            button: identifyMouseButton(e.button),
+            target: identifyTarget(e.target)
+        };
+    }
+
+    static getScrollEventInfo(e) {
+        return {
+            target: identifyTarget(e.target),
+            scrollCoordinates: {
+                scrollWidth: e.target.scrollingElement.scrollWidth,
+                scrollHeight: e.target.scrollingElement.scrollHeight,
+                scrollLeft: e.target.scrollingElement.scrollLeft,
+                scrollTop: e.target.scrollingElement.scrollTop
+            }
+        };
+    }
+
+    static getKeyEventInfo(e) {
+        return {
+            key: e.key
+        };
+    }
+
+    static getVisibilityChangeEventInfo(e) {
+        let userEnteredPage = document.visibilityState == "visible";
+        return {
+            userAction: userEnteredPage ? "Entered Page" : "Exited Page",
+            page: document.URL
+        };
+    }
+
+    static getConsoleErrorEventInfo(e) {
+        return {
+            arguments: e.arguments
+        };
+    }
+
+    static getIdleEndEventInfo(e) {
+        return {
+            idle_duration: e.duration
+        };
+    }
+
+    static getEventInfo(e) {
+        console.log("getActivityFromEvent()");
+
+        if (!e) return {};
+
         switch (e.type) {
+            case "error":
+                return getErrorEventInfo(e);
+            case "click":
+            case "contextmenu":
+            case "dblclick":
+            case "mousedown":
+            case "mouseup":
+            case "mouseenter":
+            case "mouseleave":
+            case "mouseout":
+            case "mouseover":
+            case "mousemove":
+                return getMouseEventInfo(e);
+            case "scroll":
+                return getScrollEventInfo(e);
+            case "keydown":
+            case "keypress":
+            case "keyup":
+                return getKeyEventInfo(e);
+            case "visibilitychange":
+                return getVisibilityChangeEventInfo(e);
+            case "console_error":
+                return getConsoleErrorEventInfo(e);
+            case "idleend":
+                return getIdleEndEventInfo(e);
             default:
                 return {};
         }
