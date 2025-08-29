@@ -450,7 +450,8 @@ function getMouseCoordinates(event) {
 function getActivityFromClickEvent(event) {
     return {
         coordinates: getMouseCoordinates(event),
-        button: identifyMouseButton(event.button)
+        button: identifyMouseButton(event.button),
+        target: event.target
     };
 }
 
@@ -509,7 +510,8 @@ addEventListener("load", (event) => {
             //  Error
             "error", 
             //  Mouse events
-            "click", "contextmenu", "dblclick", "mousedown", "mouseup"
+            "click", "contextmenu", "dblclick", "mousedown", "mouseup",
+            "mouseenter"
             // "click", "contextmenu", "dblclick", "mousedown", "mouseenter", 
             // "mouseleave",
             // "mousemove", "mouseout", "mouseover", "mouseup",
