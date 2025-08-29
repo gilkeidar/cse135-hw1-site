@@ -345,7 +345,7 @@ class ActivityEventLogger {
         return {
             type: "idleend",
             time_stamp: time_stamp,
-            duration: time_stamp - this.last_activity_time
+            duration: time_stamp - this.last_activity_time - this.minIdleTime
         };
     }
 
