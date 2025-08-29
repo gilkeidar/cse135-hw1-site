@@ -547,12 +547,12 @@ addEventListener("load", (event) => {
             //  Error
             "error", 
             //  Mouse events
-            //"click", "contextmenu", "dblclick", "mousedown", "mouseup",
-            //"mouseenter", "mouseleave", "mouseout", "mouseover",  "mousemove",
+            "click", "contextmenu", "dblclick", "mousedown", "mouseup",
+            "mouseenter", "mouseleave", "mouseout", "mouseover",  "mousemove",
             "scroll",
-            // "click", "contextmenu", "dblclick", "mousedown", "mouseenter", 
-            // "mouseleave",
-            // "mousemove", "mouseout", "mouseover", "mouseup",
+            "click", "contextmenu", "dblclick", "mousedown", "mouseenter", 
+            "mouseleave",
+            "mousemove", "mouseout", "mouseover", "mouseup",
             //  Key events
             "keydown", "keypress", "keyup"
         ];
