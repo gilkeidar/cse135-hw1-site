@@ -441,6 +441,10 @@ function identifyMouseButton(button_index) {
 }
 
 function identifyTarget(target) {
+    console.log("identifying target...");
+    console.log(`target has id? ${target.hasOwnProperty("id")}`);
+    console.log(`target has className? ${target.hasOwnProperty("className")}`);
+    console.log(`target has nodeName? ${target.hasOwnProperty("nodeName")}`);
     return {
         id: target.hasOwnProperty("id") ? target.id : "",
         className: target.hasOwnProperty("className") ? target.className : "",
