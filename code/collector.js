@@ -119,7 +119,7 @@ async function sendUserSessionObject() {
         //      localStorage to USER_SESSION_ENDPOINT with a POST request.
         //  2.  If the request succeeds, unset user_session in localStorage.
 
-        const response = fetch(USER_SESSION_ENDPOINT, {
+        const response = await fetch(USER_SESSION_ENDPOINT, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
@@ -130,7 +130,7 @@ async function sendUserSessionObject() {
         if (response.ok) {
             console.log("Sending UserSession object succeeded.");
 
-            localStorage.remoevItem(ls_USER_SESSION);
+            localStorage.removeItem(ls_USER_SESSION);
         }
         else {
             console.error(`Sending UserSession object failed: received response`
