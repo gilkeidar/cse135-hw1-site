@@ -576,7 +576,7 @@ function loadEventHandler() {
 /*  Set-up  */
 
 //  Page load handler
-document.addEventListener("load", (event) => {
+addEventListener("load", (event) => {
     console.log("Page load event has fired.");
 
     //  Wait for page load event to complete so that
