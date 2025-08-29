@@ -82,6 +82,11 @@ const ls_USER_SESSION = "user_session";
 const ls_ACTIVITY_BURST = "activity_burst";
 
 /**
+ * localStorage key name for the timestamp of the start of the user session.
+ */
+const ls_SESSION_START = "session_start";
+
+/**
  * URL of mock REST endpoint to POST UserSession data to (once per session).
  */
 const USER_SESSION_ENDPOINT = "https://gilkeidar.com/json/user-sessions";
