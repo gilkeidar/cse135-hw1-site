@@ -463,6 +463,12 @@ function getActivityFromClickEvent(event) {
     };
 }
 
+function getActivityFromKeyEvent(event) {
+    return {
+        
+    };
+}
+
 function getActivityFromEvent(event) {
     console.log("getActivityFromEvent()");
 
@@ -476,7 +482,16 @@ function getActivityFromEvent(event) {
         case "dblclick":
         case "mousedown":
         case "mouseup":
+        case "mouseenter":
+        case "mouseleave":
+        case "mouseout":
+        case "mouseover":
+        case "mousemove":
             return getActivityFromClickEvent(event);
+        case "keydown":
+        case "keypress":
+        case "keyup":
+            return getActivityFromKeyEvent(event);
         default:
             return {};
     }
@@ -519,12 +534,12 @@ addEventListener("load", (event) => {
             "error", 
             //  Mouse events
             "click", "contextmenu", "dblclick", "mousedown", "mouseup",
-            "mouseenter", "mouseleave", "mouseout", "mouseover", 
+            "mouseenter", "mouseleave", "mouseout", "mouseover",  "mousemove",
             // "click", "contextmenu", "dblclick", "mousedown", "mouseenter", 
             // "mouseleave",
             // "mousemove", "mouseout", "mouseover", "mouseup",
             // //  Key events
-            // "keydown", "keypress", "keyup"
+            "keydown", "keypress", "keyup"
         ];
 
         //  Setup activity event handlers for each of the built-in continuous 
