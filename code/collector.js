@@ -515,7 +515,7 @@ addEventListener("load", (event) => {
             console.log(e);
             addEventListener(e, (event) => {
                 console.log("Event!");
-                console.log(e);
+                console.log(event);
                 activityEventHandler(event);
             })
         }
