@@ -29,13 +29,20 @@ const ACTIVITY_BURST_ENDPOINT =
     "https://gilkeidar.com/json/activity-bursts";
 
 class ActivityData {
-    constructor(session_id, event, activity) {
+    constructor(session_id, activity_type, time_stamp, activity) {
         this.session_id = session_id;
-        this.activity_type = event.type;
+        this.activity_type = activity_type;
+        this.time_stamp = time_stamp;
         this.activity = activity;
-        // this.time_stamp = event.timeStamp;
-        this.time_stamp = Date.now();
     }
+
+    // constructor(session_id, event, activity) {
+    //     this.session_id = session_id;
+    //     this.activity_type = event.type;
+    //     this.activity = activity;
+    //     // this.time_stamp = event.timeStamp;
+    //     this.time_stamp = Date.now();
+    // }
 }
 
 class ActivityBurst {
@@ -152,14 +159,14 @@ console.warn = function() {
 }
 
 console.error = function() {
-    activityEventHandler(
-        {
-            type: "console_error"
-        }, 
-        {
-            arguments : arguments
-        }
-    );
+    // activityEventHandler(
+    //     {
+    //         type: "console_error"
+    //     }, 
+    //     {
+    //         arguments : arguments
+    //     }
+    // );
 
     return _error.apply(console, arguments);
 }
@@ -225,6 +232,10 @@ function createUserSession() {
 
 async function sendActivityBurstObject() {
     console.log("sendActivityBurstObject()");
+
+    //  1.  Try to write activity_burst from memory into localStorage if the
+    //      activity_burst in localStorage is unset.
+    writeActivityBurstToLocalStorage();
 
     //  1.  If activity_burst is set in localStorage:
     let activity_burst_string = localStorage.getItem(ls_ACTIVITY_BURST);
@@ -375,22 +386,100 @@ function loadEventHandler() {
     }, ACTIVITY_COLLECTION_PERIOD)
 }
 
-function activityEventHandler(event, activity) {
-    console.log("activityEventHandler()");
+// function activityEventHandler(event, activity) {
+//     console.log("activityEventHandler()");
 
-    //  1.  Create an ActivityData object for the relevant event.
-    let session_id = localStorage.getItem(ls_SESSION_ID);
-    let activityData = new ActivityData(session_id, event, activity);
+//     //  1.  Create an ActivityData object for the relevant event.
+//     let session_id = localStorage.getItem(ls_SESSION_ID);
+//     let activityData = new ActivityData(session_id, event, activity);
 
-    //  2.  Attempt to add the ActivityData object to activity_burst.
-    activity_burst.addActivityData(activityData);
-    //  3.  If activity_burst is unset in localStorage:
+//     //  2.  Attempt to add the ActivityData object to activity_burst.
+//     activity_burst.addActivityData(activityData);
+//     //  3.  If activity_burst is unset in localStorage:
+//     if (!localStorage.getItem(ls_ACTIVITY_BURST)) {
+//         //  1.  Stringify activity_burst and store it in localStorage.
+//         localStorage.setItem(ls_ACTIVITY_BURST, JSON.stringify(activity_burst));
+//         //  2.  Reset activity_burst in memory.
+//         activity_burst = new ActivityBurst();
+//     }
+// }
+
+//  Continuous Activity Event Handlers
+function getActivityFromErrorEvent(event) {
+    return {
+        message: event.message,
+        filename: event.filename,
+        lineno: event.lineno,
+        colno: event.colno,
+        error: event.error
+    };
+}
+
+function identifyMouseButton(button_index) {
+    //  Identify the mouse button clicked based on its button_index in a mouse 
+    //  event
+    switch (button_index) {
+        case 0:
+            return "left";
+        case 1:
+            return "middle";
+        case 2:
+            return "right";
+        default:
+            return "unknown";
+    }
+}
+
+function getActivityFromClickEvent(event) {
+    return {
+        coordinates: {
+            clientX : event.clientX,
+            clientY : event.clientY
+        },
+        button: button
+    };
+}
+
+function writeActivityBurstToLocalStorage() {
     if (!localStorage.getItem(ls_ACTIVITY_BURST)) {
         //  1.  Stringify activity_burst and store it in localStorage.
         localStorage.setItem(ls_ACTIVITY_BURST, JSON.stringify(activity_burst));
         //  2.  Reset activity_burst in memory.
         activity_burst = new ActivityBurst();
     }
+}
+
+function getActivityFromEvent(event) {
+    console.log("getActivityFromEvent()");
+
+    if (!event) return {};
+
+    switch (event.type) {
+        case "error":
+            return getActivityFromErrorEvent(event);
+        case "click":
+            return getActivityFromClickEvent(event);
+        default:
+            return {};
+    }
+}
+
+function activityEventHandler(event) {
+    console.log("activityEventHandler()");
+
+    //  1.  Create an ActivityData object for the relevant event.
+    let session_id = localStorage.getItem(ls_SESSION_ID);
+    let activity = getActivityFromEvent(event);
+
+    let activityData = new ActivityData(session_id, event.type, Date.now(),
+        activity);
+
+    //  2.  Attempt to add the ActivityData object to activity_burst.
+    activity_burst.addActivityData(activityData);
+
+    //  3.  Attempt to write ActivityBurst to localStorage (works if it's not
+    //      set)
+    writeActivityBurstToLocalStorage();
 }
 
 //  Page load handler
@@ -405,8 +494,7 @@ addEventListener("load", (event) => {
     }, 0);
 });
 
-//  Continuous Activity Handlers
-
+//  Continuous Activity Events
 let continuousEvents = [
     //  Error
     "error", 
@@ -414,55 +502,64 @@ let continuousEvents = [
     "click", "contextmenu", "dblclick", "mousedown", "mouseenter", "mouseleave",
     "mousemove", "mouseout", "mouseover", "mouseup",
     //  Key events
-    "keydown", "keypress", "keyup",
+    "keydown", "keypress", "keyup"
 ];
 
-addEventListener("error", (event) => {
-    console.log("Error occurred.");
-    console.log(event);
-    activityEventHandler(event, {
-        message: event.message,
-        filename: event.filename,
-        lineno: event.lineno,
-        colno: event.colno,
-        error: event.error
-    });
-});
+//  Setup activity event handlers for each of the built-in continuous events
+for (e in continuousEvents) {
+    addEventListener(e, (event) => {
+        console.log("Event!");
+        console.log(e);
+        activityEventHandler(event);
+    })
+}
 
-addEventListener("unhandledrejection", (event) => {
-    console.log("Unhandled rejection occurred.");
-    console.log(event);
-    activityEventHandler(event, {
+// addEventListener("error", (event) => {
+//     console.log("Error occurred.");
+//     console.log(event);
+//     activityEventHandler(event, {
+//         message: event.message,
+//         filename: event.filename,
+//         lineno: event.lineno,
+//         colno: event.colno,
+//         error: event.error
+//     });
+// });
 
-    });
-})
+// addEventListener("unhandledrejection", (event) => {
+//     console.log("Unhandled rejection occurred.");
+//     console.log(event);
+//     activityEventHandler(event, {
 
-addEventListener("click", (event) => {
-    console.log(event);
+//     });
+// })
 
-    //  Identify which button was clicked
-    let button;
-    switch (event.button) {
-        case 0:
-            button = "left";
-            break;
-        case 2:
-            button = "right";
-            break;
-        default:
-            button = "unknown";
-    }
+// addEventListener("click", (event) => {
+//     console.log(event);
 
-    activityEventHandler(event, {
-        //  Cursor position (coordinates)
-        coordinates: {
-            clientX : event.clientX,
-            clientY : event.clientY
-        },
+//     //  Identify which button was clicked
+//     let button;
+//     switch (event.button) {
+//         case 0:
+//             button = "left";
+//             break;
+//         case 2:
+//             button = "right";
+//             break;
+//         default:
+//             button = "unknown";
+//     }
 
-        //  Clicks (and which mouse button was clicked)
-        button: button
+//     activityEventHandler(event, {
+//         //  Cursor position (coordinates)
+//         coordinates: {
+//             clientX : event.clientX,
+//             clientY : event.clientY
+//         },
 
-        //  Scrolling (coordinates of the scroll)
-    });
-})
+//         //  Clicks (and which mouse button was clicked)
+//         button: button
+
+//         //  Scrolling (coordinates of the scroll)
+//     });
+// })
