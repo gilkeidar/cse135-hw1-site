@@ -98,7 +98,8 @@ function createUserSession() {
 
     //  3.  Create a new UserSession object and fill it with static and 
     //      performance data.
-    let user_session = new UserSession();
+    let user_id = localStorage.getItem(ls_USER_ID);
+    let user_session = new UserSession(session_id, user_id);
 
     //  4.  Store the UserSession object in localStorage as a stringified JSON.
     localStorage.setItem(ls_USER_SESSION, JSON.stringify(user_session));
