@@ -272,25 +272,27 @@ class ActivityBurst {
 class ActivityEventLogger {
     static activity_events = [
         //  Error events
-        "error",
-        //  Mouse events
-        "click", "contextmenu", "dblclick", "mousedown", "mouseup", 
-        "mouseenter", "mouseleave", "mouseout", "mouseover", "mousemove",
-        "scroll",
-        //  Keyboard events
-        "keydown", "keypress", "keyup",
-        //  Page Entry / Exit events
-        "visibilitychange"
+        // "error",
+        // //  Mouse events
+        // "click", "contextmenu", "dblclick", "mousedown", "mouseup", 
+        // "mouseenter", "mouseleave", "mouseout", "mouseover", "mousemove",
+        // "scroll",
+        // //  Keyboard events
+        // "keydown", "keypress", "keyup",
+        // //  Page Entry / Exit events
+        // "visibilitychange"
+        "click"
     ];
     static user_activity_events = [
         //  Mouse events
-        "click", "contextmenu", "dblclick", "mousedown", "mouseup", 
-        "mouseenter", "mouseleave", "mouseout", "mouseover", "mousemove",
-        "scroll",
-        //  Keyboard events
-        "keydown", "keypress", "keyup",
-        //  Page Entry / Exit events
-        "visibilitychange"
+        // "click", "contextmenu", "dblclick", "mousedown", "mouseup", 
+        // "mouseenter", "mouseleave", "mouseout", "mouseover", "mousemove",
+        // "scroll",
+        // //  Keyboard events
+        // "keydown", "keypress", "keyup",
+        // //  Page Entry / Exit events
+        // "visibilitychange"
+        "click"
     ];
 
     constructor(set_events_and_track_idleness = true) {
