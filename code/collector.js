@@ -374,7 +374,7 @@ class ActivityEventLogger {
         let event_time = Date.now();
 
         //      3.  Get event info object for e.
-        let event_info = getEventInfo(e);
+        let event_info = ActivityEventLogger.getEventInfo(e);
 
         let activityData = new ActivityData(event_name, event_time, event_info);
 
@@ -428,15 +428,15 @@ class ActivityEventLogger {
 
     static getMouseEventInfo(e) {
         return {
-            coordinates: getMouseCoordinates(e),
-            button: identifyMouseButton(e.button),
-            target: identifyTarget(e.target)
+            coordinates: ActivityEventLogger.getMouseCoordinates(e),
+            button: ActivityEventLogger.identifyMouseButton(e.button),
+            target: ActivityEventLogger.identifyTarget(e.target)
         };
     }
 
     static getScrollEventInfo(e) {
         return {
-            target: identifyTarget(e.target),
+            target: ActivityEventLogger.identifyTarget(e.target),
             scrollCoordinates: {
                 scrollWidth: e.target.scrollingElement.scrollWidth,
                 scrollHeight: e.target.scrollingElement.scrollHeight,
@@ -479,7 +479,7 @@ class ActivityEventLogger {
 
         switch (e.type) {
             case "error":
-                return getErrorEventInfo(e);
+                return ActivityEventLogger.getErrorEventInfo(e);
             case "click":
             case "contextmenu":
             case "dblclick":
@@ -490,19 +490,19 @@ class ActivityEventLogger {
             case "mouseout":
             case "mouseover":
             case "mousemove":
-                return getMouseEventInfo(e);
+                return ActivityEventLogger.getMouseEventInfo(e);
             case "scroll":
-                return getScrollEventInfo(e);
+                return ActivityEventLogger.getScrollEventInfo(e);
             case "keydown":
             case "keypress":
             case "keyup":
-                return getKeyEventInfo(e);
+                return ActivityEventLogger.getKeyEventInfo(e);
             case "visibilitychange":
-                return getVisibilityChangeEventInfo(e);
+                return ActivityEventLogger.getVisibilityChangeEventInfo(e);
             case "console_error":
-                return getConsoleErrorEventInfo(e);
+                return ActivityEventLogger.getConsoleErrorEventInfo(e);
             case "idleend":
-                return getIdleEndEventInfo(e);
+                return ActivityEventLogger.getIdleEndEventInfo(e);
             default:
                 return {};
         }
