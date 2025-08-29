@@ -465,7 +465,7 @@ function getActivityFromClickEvent(event) {
 
 function getActivityFromKeyEvent(event) {
     return {
-        
+        key: event.key
     };
 }
 
