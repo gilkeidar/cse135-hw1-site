@@ -281,7 +281,11 @@ class ActivityEventLogger {
         // "keydown", "keypress", "keyup",
         // //  Page Entry / Exit events
         // "visibilitychange"
-        "click"
+        "click",
+
+        //  Custom Events (Idle start / end, console error)
+        "idlestart"
+        
     ];
     static user_activity_events = [
         //  Mouse events
@@ -322,23 +326,40 @@ class ActivityEventLogger {
         this.last_activity_time = Date.now();
         this.isIdle = false;
         setTimeout(() => {
-            this.idleStartEventHandler();
+            // this.idleStartEventHandler();
+            this.idleStartEventTrigger();
         }, this.minIdleTime);
     }
 
-    idleStartEventHandler() {
+    idleStartEventTrigger() {
+        let current_time = Date.now();
         if (!this.isIdle 
-            && Date.now() - this.last_activity_time > this.minIdleTime) {
+            && current_time - this.last_activity_time > this.minIdleTime) {
             console.log("idlestart event fired.");
             this.isIdle = true;
 
             let idle_start_event = {
-                type: "idlestart"
+                type: "idlestart",
+                time_stamp: current_time
             };
 
-            this.logActivityEvent(idle_start_event);
+            document.dispatchEvent(idle_start_event);
         }
     }
+
+    // idleStartEventHandler() {
+    //     if (!this.isIdle 
+    //         && Date.now() - this.last_activity_time > this.minIdleTime) {
+    //         console.log("idlestart event fired.");
+    //         this.isIdle = true;
+
+    //         let idle_start_event = {
+    //             type: "idlestart"
+    //         };
+
+    //         this.logActivityEvent(idle_start_event);
+    //     }
+    // }
 
     createIdleEndEvent() {
         let time_stamp = Date.now();
@@ -354,6 +375,7 @@ class ActivityEventLogger {
     }
 
     logActivityEvent(e) {
+        console.log(`${e.type} event fired!`);
         //  Log activity event e.
         //  1.  If e is an event caused by user activity, update user idleness
         //      tracking (potentially firing "idleend" event).
@@ -380,7 +402,10 @@ class ActivityEventLogger {
 
         //      2.  Get timestamp
         let event_time;
-        if (event_name == "idleend") {
+
+        if (["idlestart", "idleend"].includes(event_name)) {
+            //  Use idleend's and idlestart's timestamp for more accurate 
+            //  logging (since it's already in the Unix epoch format)
             event_time = e.time_stamp;
         }
         else {
