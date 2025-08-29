@@ -387,11 +387,16 @@ let continuousEvents = [
 ];
 
 addEventListener("error", (event) => {
+    console.log("Error occurred.");
     console.log(event);
     activityEventHandler(event, {
 
     });
 });
 
-//  Intentionally cause error
-fetch("localhost");
+addEventListener("click", (event) => {
+    console.log(event);
+    activityEventHandler(event, {
+
+    });
+})
