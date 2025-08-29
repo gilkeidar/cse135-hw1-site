@@ -438,7 +438,7 @@ async function sendUserSessionObject() {
     }
 }
 
-function sendActivityBurstObject(activity_event_logger) {
+async function sendActivityBurstObject(activity_event_logger) {
     console.log("sendActivityBurstObject()");
 
     //  1.  Try to write activity_burst from memory into localStorage if the
