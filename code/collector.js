@@ -441,7 +441,8 @@ function getActivityFromClickEvent(event) {
 }
 
 function writeActivityBurstToLocalStorage() {
-    if (!localStorage.getItem(ls_ACTIVITY_BURST)) {
+    if (!localStorage.getItem(ls_ACTIVITY_BURST) 
+        && activity_burst.activity.length > 0) {
         //  1.  Stringify activity_burst and store it in localStorage.
         localStorage.setItem(ls_ACTIVITY_BURST, JSON.stringify(activity_burst));
         //  2.  Reset activity_burst in memory.
