@@ -28,6 +28,43 @@ const USER_SESSION_ENDPOINT = "https://gilkeidar.com/json/user-sessions";
 const ACTIVITY_BURST_ENDPOINT = 
     "https://gilkeidar.com/json/activity-bursts";
 
+class ActivityData {
+    constructor(session_id, event, activity) {
+        this.session_id = session_id;
+        this.activity_type = event.type;
+        this.activity = activity;
+        this.time_stamp = event.timeStamp;
+    }
+}
+
+class ActivityBurst {
+    static MAX_ACTIVITY_BURST_SIZE = 10000;
+
+    constructor() {
+        //  Time of earliest ActivityData object in array
+        this.burst_start = 0;
+
+        //  Time of latest ActivityData object in array
+        this.burst_end = 0;
+
+        //  Initialize array of ActivityData objects
+        this.activity = [];
+    }
+
+    addActivityData(activityData) {
+        if (this.activity.length == 0) {
+            //  ActivityData array is empty; set burst_start timestamp
+            this.burst_start = activityData.time_stamp;
+        }
+
+        //  Only push ActivityData to array if it fits
+        if (this.activity.length < ActivityBurst.MAX_ACTIVITY_BURST_SIZE) {
+            this.activity.push(activityData);
+            this.burst_end = activityData.time_stamp;
+        }
+    }
+}
+
 class StaticData {
     constructor() {
         console.log("Creating StaticData object.");
@@ -95,6 +132,8 @@ class UserSession {
     }
 }
 
+//  Global in-memory activity burst (for current ACTIVITY_COLLECTION_PERIOD)
+let activity_burst = new ActivityBurst();
 
 /**
  * Generate a random user or session ID string of the given length.
@@ -155,15 +194,45 @@ function createUserSession() {
 
 async function sendActivityBurstObject() {
     console.log("sendActivityBurstObject()");
+
+    //  1.  If activity_burst is set in localStorage:
+    let activity_burst_string = localStorage.getItem(ls_ACTIVITY_BURST);
+    if (activity_burst_string) {
+        console.log("Attempting to sent ActivityBurst object...");
+
+        //  1.  Send the stringified JSON of the ActivityBurst object in
+        //      localStorage to ACTIVITY_BURST_ENDPOINT with a POST request.
+        //  2.  If the request succeeds, unset activity_burst in localStorage.
+
+        const response = await fetch(ACTIVITY_BURST_ENDPOINT, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: activity_burst_string
+        });
+
+        if (response.ok) {
+            console.log("Sending ActivityBurst object succeeded.");
+            console.log("Clearing it from localStorage.");
+
+            localStorage.removeItem(ls_ACTIVITY_BURST);
+        }
+        else {
+            console.error(`Sending ActivityBurst object failed: received`
+                + ` response code ${response.status}.`);
+        }
+    }
 }
 
 async function sendUserSessionObject() {
     console.log("sendUserSessionObject()");
 
     //  1.  If user_session is set in localStorage:
-    let user_session = localStorage.getItem(ls_USER_SESSION);
-    if (user_session) {
+    let user_session_string = localStorage.getItem(ls_USER_SESSION);
+    if (user_session_string) {
         console.log("Attempting to send UserSession object...");
+
         //  1.  Send the stringified JSON of the UserSession object in
         //      localStorage to USER_SESSION_ENDPOINT with a POST request.
         //  2.  If the request succeeds, unset user_session in localStorage.
@@ -173,11 +242,12 @@ async function sendUserSessionObject() {
             headers: {
                 "Content-Type": "application/json"
             },
-            body: user_session
+            body: user_session_string
         });
 
         if (response.ok) {
             console.log("Sending UserSession object succeeded.");
+            console.log("Clearing it from localStorage.");
 
             localStorage.removeItem(ls_USER_SESSION);
         }
@@ -274,6 +344,25 @@ function loadEventHandler() {
     }, ACTIVITY_COLLECTION_PERIOD)
 }
 
+function activityEventHandler(event, activity) {
+    console.log("activityEventHandler()");
+
+    //  1.  Create an ActivityData object for the relevant event.
+    let session_id = localStorage.getItem(ls_SESSION_ID);
+    let activityData = new ActivityData(session_id, event, activity);
+
+    //  2.  Attempt to add the ActivityData object to activity_burst.
+    activity_burst.addActivityData(activityData);
+    //  3.  If activity_burst is unset in localStorage:
+    if (!localStorage.getItem(ls_ACTIVITY_BURST)) {
+        //  1.  Stringify activity_burst and store it in localStorage.
+        localStorage.setItem(ls_ACTIVITY_BURST, JSON.stringify(activity_burst));
+        //  2.  Reset activity_burst in memory.
+        activity_burst = new ActivityBurst();
+    }
+}
+
+//  Page load handler
 addEventListener("load", (event) => {
     console.log("Page load event has fired.");
     setTimeout(() => {
@@ -284,3 +373,25 @@ addEventListener("load", (event) => {
         loadEventHandler();
     }, 0);
 });
+
+//  Continuous Activity Handlers
+
+let continuousEvents = [
+    //  Error
+    "error", 
+    //  Mouse events
+    "click", "contextmenu", "dblclick", "mousedown", "mouseenter", "mouseleave",
+    "mousemove", "mouseout", "mouseover", "mouseup",
+    //  Key events
+    "keydown", "keypress", "keyup",
+];
+
+addEventListener("error", (event) => {
+    console.log(event);
+    activityEventHandler(event, {
+
+    });
+});
+
+//  Intentionally cause error
+fetch("localhost");
