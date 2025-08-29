@@ -338,10 +338,13 @@ class ActivityEventLogger {
             console.log("idlestart event fired.");
             this.isIdle = true;
 
-            let idle_start_event = {
-                type: "idlestart",
+            // let idle_start_event = {
+            //     type: "idlestart",
+            //     time_stamp: current_time
+            // };
+            let idle_start_event = new CustomEvent("idlestart", {
                 time_stamp: current_time
-            };
+            })
 
             document.dispatchEvent(idle_start_event);
         }
