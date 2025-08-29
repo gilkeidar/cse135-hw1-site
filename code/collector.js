@@ -494,8 +494,9 @@ addEventListener("load", (event) => {
         loadEventHandler();
 
         //  Setup activity event handlers
+        console.log("Setting up activity event handlers.");
 
-        //  Continuous Activity Events
+        //  Continuous Activity Events (built-in)
         let continuousEvents = [
             //  Error
             "error", 
@@ -509,7 +510,9 @@ addEventListener("load", (event) => {
 
         //  Setup activity event handlers for each of the built-in continuous 
         //  events
+        console.log("Setting up built-in activity event handlers...");
         for (e in continuousEvents) {
+            console.log(e);
             addEventListener(e, (event) => {
                 console.log("Event!");
                 console.log(e);
