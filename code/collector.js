@@ -492,28 +492,34 @@ addEventListener("load", (event) => {
         //  Wait for page load event to complete so that 
         //  window.performance.timing.loadEventEnd value is set.
         loadEventHandler();
+
+        //  Setup activity event handlers
+
+        //  Continuous Activity Events
+        let continuousEvents = [
+            //  Error
+            "error", 
+            //  Mouse events
+            "click", "contextmenu", "dblclick", "mousedown", "mouseenter", 
+            "mouseleave",
+            "mousemove", "mouseout", "mouseover", "mouseup",
+            //  Key events
+            "keydown", "keypress", "keyup"
+        ];
+
+        //  Setup activity event handlers for each of the built-in continuous 
+        //  events
+        for (e in continuousEvents) {
+            addEventListener(e, (event) => {
+                console.log("Event!");
+                console.log(e);
+                activityEventHandler(event);
+            })
+        }
     }, 0);
 });
 
-//  Continuous Activity Events
-let continuousEvents = [
-    //  Error
-    "error", 
-    //  Mouse events
-    "click", "contextmenu", "dblclick", "mousedown", "mouseenter", "mouseleave",
-    "mousemove", "mouseout", "mouseover", "mouseup",
-    //  Key events
-    "keydown", "keypress", "keyup"
-];
 
-//  Setup activity event handlers for each of the built-in continuous events
-for (e in continuousEvents) {
-    addEventListener(e, (event) => {
-        console.log("Event!");
-        console.log(e);
-        activityEventHandler(event);
-    })
-}
 
 // addEventListener("error", (event) => {
 //     console.log("Error occurred.");
