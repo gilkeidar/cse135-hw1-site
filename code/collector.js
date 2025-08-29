@@ -388,7 +388,8 @@ class ActivityEventLogger {
 
     getEventInfo(e) {
         switch (e.type) {
-
+            default:
+                return {};
         }
     }
 
@@ -399,10 +400,10 @@ class ActivityEventLogger {
             console.log("Writing activity burst to localStorage...");
             //  1.  Stringify activity_burst and store it in localStorage.
             localStorage.setItem(ls_ACTIVITY_BURST, 
-                JSON.stringify(activity_burst));
+                JSON.stringify(this.activity_burst));
             
             //  2.  Reset activity_burst in memory.
-            activity_burst = new ActivityBurst();
+            this.activity_burst = new ActivityBurst();
         }
     }
 }
