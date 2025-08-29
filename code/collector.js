@@ -223,7 +223,7 @@ class ActivityBurst {
      * up in localStorage.
      */
     constructor() {
-        constructor.log("Creating ActivityBurst object.");
+        console.log("Creating ActivityBurst object.");
 
         //  Mark the ActivityBurst with the session ID. (Requires session to be
         //  setup).
