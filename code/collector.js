@@ -511,7 +511,7 @@ addEventListener("load", (event) => {
             "error", 
             //  Mouse events
             "click", "contextmenu", "dblclick", "mousedown", "mouseup",
-            "mouseenter"
+            "mouseenter", "mouseleave", "mouseout", "mouseover", 
             // "click", "contextmenu", "dblclick", "mousedown", "mouseenter", 
             // "mouseleave",
             // "mousemove", "mouseout", "mouseover", "mouseup",
