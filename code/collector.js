@@ -527,6 +527,63 @@ class ActivityEventLogger {
 
 /*  Function Definitions    */
 
+/**
+ * Generate a random user or session ID string of the given length.
+ * @param {Number} id_length 
+ */
+function generateID(id_length) {
+    let id = "";
+    for (let i = 0; i < ID_LENGTH; i++) {
+        let rIndex = Math.floor(Math.random() * ID_ALPHABET_SIZE);
+
+        if (rIndex < NUM_LETTERS) {
+            //  Append lower-case letter
+            id += String.fromCharCode("a".charCodeAt(0) + rIndex);
+        }
+        else if (rIndex < NUM_LETTERS * 2) {
+            //  Append upper-case letter
+            id += String.fromCharCode("A".charCodeAt(0) + rIndex - NUM_LETTERS);
+        }
+        else {
+            //  Append digit
+            id += String.fromCharCode("0".charCodeAt(0) 
+                + rIndex - (2 * NUM_LETTERS));
+        }
+    }
+
+    return id;
+}
+
+/**
+ * Creates new user session.
+ * @note This function overrides the session_id, user_session, and session_start
+ * key-value pairs in localStorage.
+ * @note This function assumes that the user_id key-value pair is already set in
+ * localStorage.
+ */
+function createUserSession() {
+    console.log("createUserSession()");
+
+    //  1.  Generate a new session_id and store it in localStorage.
+    let session_id = generateID();
+
+    console.log(`Creating new user session with id ${session_id} in `
+        + `localStorage.`);
+    localStorage.setItem(ls_SESSION_ID, session_id);
+
+    //  2.  Set session_start to the current time in localStorage.
+    let session_start = new Date();
+    localStorage.setItem(ls_SESSION_START, session_start.toUTCString());
+
+    //  3.  Create a new UserSession object and fill it with static and 
+    //      performance data.
+    let user_id = localStorage.getItem(ls_USER_ID);
+    let user_session = new UserSession(session_id, user_id);
+
+    //  4.  Store the UserSession object in localStorage as a stringified JSON.
+    localStorage.setItem(ls_USER_SESSION, JSON.stringify(user_session));
+}
+
 async function sendUserSessionObject() {
     console.log("sendUserSessionObject()");
 
