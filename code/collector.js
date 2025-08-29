@@ -339,9 +339,11 @@ class ActivityEventLogger {
     }
 
     createIdleEndEvent() {
+        let time_stamp = Date.now();
         return {
             type: "idleend",
-            duration: Date.now() - this.last_activity_time
+            time_stamp: time_stamp,
+            duration: time_stamp - this.last_activity_time
         };
     }
 
@@ -371,12 +373,28 @@ class ActivityEventLogger {
         let event_name = e.type;
 
         //      2.  Get timestamp
-        let event_time = Date.now();
+        let event_time;
+        if (event_name == "idleend") {
+            event_time = e.time_stamp;
+        }
+        else {
+            event_time = Date.now();
+        }
 
         //      3.  Get event info object for e.
         let event_info = ActivityEventLogger.getEventInfo(e);
 
         let activityData = new ActivityData(event_name, event_time, event_info);
+
+        //  DEBUG
+        if (["idlestart", "idleend"].includes(event_name)) {
+            console.log(`${event_name} event fired! Time: ${event_time}`);
+
+            if (event_name == "idleend") {
+                console.log(`Idle duration: ${e.duration}`);
+            }
+        }
+        //  DEBUG
 
         //  3.  Log e in activity_burst.
         this.activity_burst.addActivityData(activityData);
