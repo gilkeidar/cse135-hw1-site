@@ -540,8 +540,8 @@ function getActivityFromEvent(event) {
 }
 
 function idleStartEventHandler() {
-    console.log("Idle Start Event!");
-    if (Date.now() - last_activity_time >= 2000) {
+    if (!isIdle && Date.now() - last_activity_time >= 2000) {
+        console.log("Idle Start Event!");
         isIdle = true;
 
         activityEventHandler({
