@@ -302,7 +302,7 @@ class ActivityEventLogger {
 
         //  2.  Assign event handler to every activity event we want to log.
         if (set_events_and_track_idleness) {
-            for (event_name of ActivityEventLogger.activity_events) {
+            for (let event_name of ActivityEventLogger.activity_events) {
                 document.addEventListener(event_name, (e) => {
                     this.logActivityEvent(e);
                 });
