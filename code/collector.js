@@ -149,6 +149,9 @@ let activity_burst = new ActivityBurst();
 //  For tracking user idleness ("idlestart" and "idleend" events)
 let last_activity_time = Date.now();
 let isIdle = false;
+setTimeout(() => {
+    idleStartEventHandler();
+}, 2000);
 
 //  Overwrite console to track console errors
 // (from https://stackoverflow.com/questions/8000009/is-there-a-way-in-javascript-to-listen-console-events)
@@ -536,6 +539,17 @@ function getActivityFromEvent(event) {
     }
 }
 
+function idleStartEventHandler() {
+    console.log("Idle Start Event!");
+    if (Date.now() - last_activity_time >= 2000) {
+        isIdle = true;
+
+        activityEventHandler({
+            type: "idlestart"
+        });
+    }
+}
+
 function activityEventHandler(event) {
     console.log("activityEventHandler()");
 
@@ -567,13 +581,7 @@ function activityEventHandler(event) {
         last_activity_time = Date.now();
 
         setTimeout(() => {
-            if (Date.now() - last_activity_time >= 2000) {
-                isIdle = true;
-
-                activityEventHandler({
-                    type: "idlestart"
-                });
-            }
+            idleStartEventHandler();
         }, 2000);
     }
 
