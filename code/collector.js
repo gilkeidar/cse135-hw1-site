@@ -514,7 +514,7 @@ addEventListener("load", (event) => {
         for (const e of continuousEvents) {
             console.log(e);
             addEventListener(e, (event) => {
-                console.log("Event!");
+                console.log(`${e} event!`);
                 console.log(event);
                 activityEventHandler(event);
             })
