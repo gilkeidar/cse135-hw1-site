@@ -192,7 +192,8 @@ async function sendUserSessionObject() {
 function loadEventHandler() {
     console.log("loadEventHandler()");
 
-    //  1.  Determine whether a user already exists; if not, generate a new ID.
+    //  1.  Determine whether a user already exists; if not, generate a new ID
+    //      and a new user session.
     if (!localStorage.getItem(ls_USER_ID)) {
         console.log("Unknown user - creating new user ID.");
 
@@ -200,43 +201,56 @@ function loadEventHandler() {
 
         console.log(`Storing user ID ${user_id} in localStorage.`);
         localStorage.setItem(ls_USER_ID, user_id);
-    }
 
-    //  2.  Determine whether a user session already exists.
-
-    //      1.  A user session does not exist - create one.
-    let session_id = localStorage.getItem(ls_SESSION_ID);
-    if (!session_id) {
-        console.log("A user session does not exist - creating one.");
-
+        console.log("Creating a new session for the new user.");
         createUserSession();
     }
     else {
-        //  2.  A user session does exist.
-        console.log(`User session does exist with session_id ${session_id}.`);
+        //  2.  The user does exist - determine whether a user session already 
+        //      exists.
+        console.log(
+            `User is known, with id ${localStorage.getItem(ls_USER_ID)}.`);
 
-        //      1.  Send any unsent data of the previous user session.
-        console.log(`Sending any unsent data of session ${session_id}.`);
-        try {
-            sendUserSessionObject();
-            sendActivityBurstObject();
-        } catch (error) {
-            console.error(error);
-        }
+        //  Get user session id (if it exists)
+        let session_id = localStorage.getItem(ls_SESSION_ID);
 
-        //      2.  If the user session has expired, create a new user session.
-        let session_start = Date.parse(localStorage.getItem(ls_SESSION_START));
-        let current_time = new Date();
-
-        if (isNaN(session_start)
-            || Math.abs(current_time - session_start) > MAX_SESSION_TIME) {
-            console.log("Past session is either invalid or expired - creating "
-                + "new session.");
+        if (!session_id) {
+            //  1.  A user session does not exist - create one.
+            console.log("A user session does not exist - creating one.");
 
             createUserSession();
         }
+        else {
+            //  2.  A user session does exist.
+            console.log(
+                `User session does exist with session_id ${session_id}.`);
+
+            //      1.  Send any unsent data of the previous user session.
+            console.log(`Sending any unsent data of session ${session_id}.`);
+            try {
+                sendUserSessionObject();
+                sendActivityBurstObject();
+            } catch (error) {
+                console.error(error);
+            }
+
+            //      2.  If the user session has expired, create a new user 
+            //          session.
+            let session_start = 
+                Date.parse(localStorage.getItem(ls_SESSION_START));
+            let current_time = new Date();
+
+            if (isNaN(session_start)
+                || Math.abs(current_time - session_start) > MAX_SESSION_TIME) {
+                console.log("Past session is either invalid or expired - "
+                    + "creating new session.");
+
+                createUserSession();
+            }
+        }
     }
-    
+
+    //  By this point, a user id and user session exist.
 
     //  3.  Send current user session data (UserSession object) to the server.
     console.log("Sending current user session data (if necessary).");
