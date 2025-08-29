@@ -146,6 +146,10 @@ class UserSession {
 //  Global in-memory activity burst (for current ACTIVITY_COLLECTION_PERIOD)
 let activity_burst = new ActivityBurst();
 
+//  For tracking user idleness ("idlestart" and "idleend" events)
+let last_activity_time = Date.now();
+let isIdle = false;
+
 //  Overwrite console to track console errors
 // (from https://stackoverflow.com/questions/8000009/is-there-a-way-in-javascript-to-listen-console-events)
 let _log = console.log, _warn = console.warn, _error = console.error;
@@ -534,6 +538,44 @@ function getActivityFromEvent(event) {
 
 function activityEventHandler(event) {
     console.log("activityEventHandler()");
+
+    //  If the event is user activity, check for idleness
+    let userActivityEvents = [
+        //  Mouse events
+        "click", "contextmenu", "dblclick", "mousedown", "mouseup",
+        "mouseenter", "mouseleave", "mouseout", "mouseover",  "mousemove",
+        "scroll",
+        "click", "contextmenu", "dblclick", "mousedown", "mouseenter", 
+        "mouseleave",
+        "mousemove", "mouseout", "mouseover", "mouseup",
+        //  Key events
+        "keydown", "keypress", "keyup"
+    ];
+
+    if (userActivityEvents.includes(event.type)) {
+        //  This event represents user activity.
+        if (isIdle) {
+            //  Idle period has ended; log "idleend" event.
+            isIdle = false;
+
+            activityEventHandler({
+                type: "idleend",
+                idle_duration: Date.now() - last_activity_time
+            });
+        }
+
+        last_activity_time = Date.now();
+
+        setTimeout(() => {
+            if (Date.now() - last_activity_time >= 2000) {
+                isIdle = true;
+
+                activityEventHandler({
+                    type: "idlestart"
+                });
+            }
+        }, 2000);
+    }
 
     //  1.  Create an ActivityData object for the relevant event.
     let session_id = localStorage.getItem(ls_SESSION_ID);
