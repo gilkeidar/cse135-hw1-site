@@ -345,6 +345,10 @@ class ActivityEventLogger {
         return {
             type: "idleend",
             time_stamp: time_stamp,
+            //  Duration:
+            //  last activity time is 2 seconds *before* idlestart event fired,
+            //  so idle duration (idlestart to idleend) is
+            //  now - last_activity_time - 2 seconds
             duration: time_stamp - this.last_activity_time - this.minIdleTime
         };
     }
