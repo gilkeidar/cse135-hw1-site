@@ -465,7 +465,7 @@ function getActivityFromClickEvent(event) {
 
 function getActivityFromScrollEvent(event) {
     return {
-
+        target: identifyTarget(event.target)
     };
 }
 
@@ -541,8 +541,8 @@ addEventListener("load", (event) => {
             //  Error
             "error", 
             //  Mouse events
-            "click", "contextmenu", "dblclick", "mousedown", "mouseup",
-            "mouseenter", "mouseleave", "mouseout", "mouseover",  "mousemove",
+            //"click", "contextmenu", "dblclick", "mousedown", "mouseup",
+            //"mouseenter", "mouseleave", "mouseout", "mouseover",  "mousemove",
             "scroll",
             // "click", "contextmenu", "dblclick", "mousedown", "mouseenter", 
             // "mouseleave",
