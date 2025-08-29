@@ -52,6 +52,7 @@ class ActivityBurst {
     }
 
     addActivityData(activityData) {
+        console.log("addActivityData()");
         if (this.activity.length == 0) {
             //  ActivityData array is empty; set burst_start timestamp
             this.burst_start = activityData.time_stamp;
@@ -132,8 +133,42 @@ class UserSession {
     }
 }
 
+//  Global Variables
+
 //  Global in-memory activity burst (for current ACTIVITY_COLLECTION_PERIOD)
 let activity_burst = new ActivityBurst();
+
+//  Overwrite console to track console errors
+// (from https://stackoverflow.com/questions/8000009/is-there-a-way-in-javascript-to-listen-console-events)
+let _log = console.log, _warn = console.warn, _error = console.error;
+
+console.log = function() {
+    return _log.apply(console, arguments);
+}
+
+console.warn = function() {
+    return _warn.apply(console, arguments);
+}
+
+console.error = function() {
+    //  1.  Create ActivityData object
+    let session_id = localStorage.getItem(ls_SESSION_ID);
+    let errorEvent = {
+        type: "console_error",
+        timeStamp: Date.now()
+    };
+
+    let activityData = new ActivityData(session_id, errorEvent, {
+        arguments : arguments
+    });
+
+    //  2.  Add ActivityData object to activity_burst.
+    activity_burst.addActivityData(activityData);
+
+    return _error.apply(console, arguments);
+}
+
+//  Function Definitions
 
 /**
  * Generate a random user or session ID string of the given length.
@@ -430,7 +465,7 @@ addEventListener("click", (event) => {
         },
 
         //  Clicks (and which mouse button was clicked)
-        button: button,
+        button: button
 
         //  Scrolling (coordinates of the scroll)
     });
