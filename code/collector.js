@@ -481,6 +481,12 @@ function getActivityFromKeyEvent(event) {
     };
 }
 
+function getActivityFromPageExit(event) {
+    return {
+        
+    };
+}
+
 function getActivityFromEvent(event) {
     console.log("getActivityFromEvent()");
 
@@ -506,6 +512,8 @@ function getActivityFromEvent(event) {
         case "keypress":
         case "keyup":
             return getActivityFromKeyEvent(event);
+        case "beforeunload":
+            return getActivityFromPageExit(event);
         default:
             return {};
     }
@@ -554,7 +562,10 @@ addEventListener("load", (event) => {
             "mouseleave",
             "mousemove", "mouseout", "mouseover", "mouseup",
             //  Key events
-            "keydown", "keypress", "keyup"
+            "keydown", "keypress", "keyup",
+
+            //  Page Entry / Exit events
+            "beforeunload"
         ];
 
         //  Setup activity event handlers for each of the built-in continuous 
