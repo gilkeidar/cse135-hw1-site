@@ -31,12 +31,58 @@ const ACTIVITY_BURST_ENDPOINT =
 class StaticData {
     constructor() {
         console.log("Creating StaticData object.");
+        
+        //  1.  Get the user agent string
+        this["user-agent"] = window.navigator.userAgent;
+
+        //  2.  Get the user's language
+        this["user-language"] = window.navigator.language;
+
+        //  3.  Get whether the user accepts cookies
+        this["user-accepts-cookies"] = window.navigator.cookieEnabled;
+
+        //  4.  Get whether the user accepts JavaScript (trivially true if this
+        //      script is running)
+        this["user-allows-javascript"] = true;
+
+        //  5.  Get whether the user allows images
+        this["user-allows-images"] = !!document.createElement("img");
+
+        //  6.  Get whether the user allows CSS
+        //      (Done by testing whether a very basic property is supported)
+        this["user-allows-css"] = CSS.supports("color", "red");
+
+        //  7.  Get the user's screen dimensions
+        this["user-screen-dimensions"] = {
+            width: window.screen.width,
+            height: window.screen.height
+        };
+
+        //  8.  Get the user's window dimensions
+        this["user-window-dimensions"] = {
+            width: window.innerWidth,
+            height: window.innerHeight
+        };
+
+        //  9.  Get the user's network connection type
+        this["user-network-connection-type"] =
+            window.navigator.connection.effectiveType;
     }
 }
 
 class PerformanceData {
     constructor() {
         console.log("Creating PerformanceData object.");
+
+        let loadStart = window.performance.timing.loadEventStart;
+        let loadEnd = window.performance.timing.loadEventEnd;
+        let loadTime = loadEnd - loadStart;
+
+        //  1.  Get the timing object
+        this["timing-object"] = window.performance.timing;
+        this["page-load-start"] = loadStart;
+        this["page-load-end"] = loadEnd;
+        this["page-load-time"] = loadTime;
     }
 }
 
@@ -81,6 +127,8 @@ function generateID(id_length) {
  * Creates new user session.
  * @note This function overrides the session_id, user_session, and session_start
  * key-value pairs in localStorage.
+ * @note This function assumes that the user_id key-value pair is already set in
+ * localStorage.
  */
 function createUserSession() {
     console.log("createUserSession()");
