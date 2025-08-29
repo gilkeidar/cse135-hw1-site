@@ -484,7 +484,8 @@ function getActivityFromKeyEvent(event) {
 function getActivityFromPageVisibilityChange(event) {
     let userEnteredPage = document.visibilityState == "visible";
     return {
-        userAction: userEnteredPage ? "Entered Page" : "Exited Page"
+        userAction: userEnteredPage ? "Entered Page" : "Exited Page",
+        page: document.URL
     };
 }
 
