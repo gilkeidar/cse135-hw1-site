@@ -404,6 +404,16 @@ function loadEventHandler() {
 //     }
 // }
 
+function writeActivityBurstToLocalStorage() {
+    if (!localStorage.getItem(ls_ACTIVITY_BURST) 
+        && activity_burst.activity.length > 0) {
+        //  1.  Stringify activity_burst and store it in localStorage.
+        localStorage.setItem(ls_ACTIVITY_BURST, JSON.stringify(activity_burst));
+        //  2.  Reset activity_burst in memory.
+        activity_burst = new ActivityBurst();
+    }
+}
+
 //  Continuous Activity Event Handlers
 function getActivityFromErrorEvent(event) {
     return {
@@ -430,24 +440,18 @@ function identifyMouseButton(button_index) {
     }
 }
 
-function getActivityFromClickEvent(event) {
+function getMouseCoordinates(event) {
     return {
-        coordinates: {
-            clientX : event.clientX,
-            clientY : event.clientY
-        },
-        button: identifyMouseButton(event.button)
+        clientX : event.clientX,
+        clientY : event.clientY
     };
 }
 
-function writeActivityBurstToLocalStorage() {
-    if (!localStorage.getItem(ls_ACTIVITY_BURST) 
-        && activity_burst.activity.length > 0) {
-        //  1.  Stringify activity_burst and store it in localStorage.
-        localStorage.setItem(ls_ACTIVITY_BURST, JSON.stringify(activity_burst));
-        //  2.  Reset activity_burst in memory.
-        activity_burst = new ActivityBurst();
-    }
+function getActivityFromClickEvent(event) {
+    return {
+        coordinates: getMouseCoordinates(event),
+        button: identifyMouseButton(event.button)
+    };
 }
 
 function getActivityFromEvent(event) {
@@ -459,6 +463,10 @@ function getActivityFromEvent(event) {
         case "error":
             return getActivityFromErrorEvent(event);
         case "click":
+        case "contextmenu":
+        case "dblclick":
+        case "mousedown":
+        case "mouseup":
             return getActivityFromClickEvent(event);
         default:
             return {};
@@ -501,11 +509,12 @@ addEventListener("load", (event) => {
             //  Error
             "error", 
             //  Mouse events
-            "click", "contextmenu", "dblclick", "mousedown", "mouseenter", 
-            "mouseleave",
-            "mousemove", "mouseout", "mouseover", "mouseup",
-            //  Key events
-            "keydown", "keypress", "keyup"
+            "click", "contextmenu", "dblclick", "mousedown", "mouseup"
+            // "click", "contextmenu", "dblclick", "mousedown", "mouseenter", 
+            // "mouseleave",
+            // "mousemove", "mouseout", "mouseover", "mouseup",
+            // //  Key events
+            // "keydown", "keypress", "keyup"
         ];
 
         //  Setup activity event handlers for each of the built-in continuous 
