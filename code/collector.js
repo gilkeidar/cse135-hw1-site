@@ -114,6 +114,7 @@ async function sendUserSessionObject() {
     //  1.  If user_session is set in localStorage:
     let user_session = localStorage.getItem(ls_USER_SESSION);
     if (user_session) {
+        console.log("Attempting to send UserSession object...");
         //  1.  Send the stringified JSON of the UserSession object in
         //      localStorage to USER_SESSION_ENDPOINT with a POST request.
         //  2.  If the request succeeds, unset user_session in localStorage.
