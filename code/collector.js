@@ -152,19 +152,14 @@ console.warn = function() {
 }
 
 console.error = function() {
-    //  1.  Create ActivityData object
-    let session_id = localStorage.getItem(ls_SESSION_ID);
-    let errorEvent = {
-        type: "console_error",
-        timeStamp: Date.now()
-    };
-
-    let activityData = new ActivityData(session_id, errorEvent, {
-        arguments : arguments
-    });
-
-    //  2.  Add ActivityData object to activity_burst.
-    activity_burst.addActivityData(activityData);
+    activityEventHandler(
+        {
+            type: "console_error"
+        }, 
+        {
+            arguments : arguments
+        }
+    );
 
     return _error.apply(console, arguments);
 }
