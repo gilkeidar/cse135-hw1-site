@@ -33,7 +33,8 @@ class ActivityData {
         this.session_id = session_id;
         this.activity_type = event.type;
         this.activity = activity;
-        this.time_stamp = event.timeStamp;
+        // this.time_stamp = event.timeStamp;
+        this.time_stamp = Date.now();
     }
 }
 
