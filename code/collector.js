@@ -436,7 +436,7 @@ function getActivityFromClickEvent(event) {
             clientX : event.clientX,
             clientY : event.clientY
         },
-        button: identifyMouseButton(event.button);
+        button: identifyMouseButton(event.button)
     };
 }
 
