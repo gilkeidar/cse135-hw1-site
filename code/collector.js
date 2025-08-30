@@ -407,16 +407,6 @@ class ActivityEventLogger {
 
         let activityData = new ActivityData(event_name, event_time, event_info);
 
-        //  DEBUG
-        // if (["idlestart", "idleend"].includes(event_name)) {
-        //     console.log(`${event_name} event fired! Time: ${event_time}`);
-
-        //     if (event_name == "idleend") {
-        //         console.log(`Idle duration: ${e.detail.duration}`);
-        //     }
-        // }
-        //  DEBUG
-
         //  3.  Log e in activity_burst.
         this.activity_burst.addActivityData(activityData);
 
