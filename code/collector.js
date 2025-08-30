@@ -344,7 +344,7 @@ class ActivityEventLogger {
             // };
             let idle_start_event = new CustomEvent("idlestart", {
                 time_stamp: current_time
-            })
+            });
 
             document.dispatchEvent(idle_start_event);
         }
@@ -379,6 +379,7 @@ class ActivityEventLogger {
 
     logActivityEvent(e) {
         console.log(`${e.type} event fired!`);
+        console.log(e);
         //  Log activity event e.
         //  1.  If e is an event caused by user activity, update user idleness
         //      tracking (potentially firing "idleend" event).
