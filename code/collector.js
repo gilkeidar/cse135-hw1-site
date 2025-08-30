@@ -343,7 +343,9 @@ class ActivityEventLogger {
             //     time_stamp: current_time
             // };
             let idle_start_event = new CustomEvent("idlestart", {
-                time_stamp: current_time
+                detail: {
+                    time_stamp: current_time
+                }
             });
 
             document.dispatchEvent(idle_start_event);
@@ -410,7 +412,7 @@ class ActivityEventLogger {
         if (["idlestart", "idleend"].includes(event_name)) {
             //  Use idleend's and idlestart's timestamp for more accurate 
             //  logging (since it's already in the Unix epoch format)
-            event_time = e.time_stamp;
+            event_time = e.detail.time_stamp;
         }
         else {
             event_time = Date.now();
