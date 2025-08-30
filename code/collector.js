@@ -272,7 +272,7 @@ class ActivityBurst {
 class ActivityEventLogger {
     static activity_events = [
         //  Error events
-        // "error",
+        "error",
         // //  Mouse events
         // "click", "contextmenu", "dblclick", "mousedown", "mouseup", 
         // "mouseenter", "mouseleave", "mouseout", "mouseover", "mousemove",
