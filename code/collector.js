@@ -273,15 +273,14 @@ class ActivityEventLogger {
     static activity_events = [
         //  Error events
         "error",
-        // //  Mouse events
-        // "click", "contextmenu", "dblclick", "mousedown", "mouseup", 
+        //  Mouse events
+        "click", "contextmenu", "dblclick", "mousedown", "mouseup", 
         // "mouseenter", "mouseleave", "mouseout", "mouseover", "mousemove",
         // "scroll",
         // //  Keyboard events
         // "keydown", "keypress", "keyup",
         // //  Page Entry / Exit events
         // "visibilitychange"
-        "click",
 
         //  Custom Events (Idle start / end, console error)
         "idlestart", "idleend", "console_error"
@@ -289,14 +288,13 @@ class ActivityEventLogger {
     ];
     static user_activity_events = [
         //  Mouse events
-        // "click", "contextmenu", "dblclick", "mousedown", "mouseup", 
+        "click", "contextmenu", "dblclick", "mousedown", "mouseup", 
         // "mouseenter", "mouseleave", "mouseout", "mouseover", "mousemove",
         // "scroll",
         // //  Keyboard events
         // "keydown", "keypress", "keyup",
         // //  Page Entry / Exit events
         // "visibilitychange"
-        "click"
     ];
 
     constructor(set_events_and_track_idleness = true) {
