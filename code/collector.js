@@ -536,6 +536,9 @@ class ActivityEventLogger {
     }
 
     static getIdleEndEventInfo(e) {
+        console.log(e);
+        console.log(e.detail);
+        console.log(e.detail.duration);
         return {
             idle_duration: e.detail.duration
         };
