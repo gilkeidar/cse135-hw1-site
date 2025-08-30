@@ -469,10 +469,17 @@ class ActivityEventLogger {
         };
     }
 
-    static getMouseEventInfo(e) {
+    static getClickEventInfo(e) {
         return {
             coordinates: ActivityEventLogger.getMouseCoordinates(e),
             button: ActivityEventLogger.identifyMouseButton(e.button),
+            target: ActivityEventLogger.identifyTarget(e.target)
+        };
+    }
+
+    static getMouseEventInfo(e) {
+        return {
+            coordinates: ActivityEventLogger.getMouseCoordinates(e),
             target: ActivityEventLogger.identifyTarget(e.target)
         };
     }
@@ -528,6 +535,7 @@ class ActivityEventLogger {
             case "dblclick":
             case "mousedown":
             case "mouseup":
+                return ActivityEventLogger.getClickEventInfo(e);
             case "mouseenter":
             case "mouseleave":
             case "mouseout":
