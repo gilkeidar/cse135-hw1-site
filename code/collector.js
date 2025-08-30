@@ -284,7 +284,7 @@ class ActivityEventLogger {
         "click",
 
         //  Custom Events (Idle start / end, console error)
-        "idlestart", "idleend"
+        "idlestart", "idleend", "console_error"
         
     ];
     static user_activity_events = [
@@ -352,20 +352,6 @@ class ActivityEventLogger {
         }
     }
 
-    // idleStartEventHandler() {
-    //     if (!this.isIdle 
-    //         && Date.now() - this.last_activity_time > this.minIdleTime) {
-    //         console.log("idlestart event fired.");
-    //         this.isIdle = true;
-
-    //         let idle_start_event = {
-    //             type: "idlestart"
-    //         };
-
-    //         this.logActivityEvent(idle_start_event);
-    //     }
-    // }
-
     createIdleEndEvent() {
         let time_stamp = Date.now();
 
@@ -380,16 +366,6 @@ class ActivityEventLogger {
                     - this.minIdleTime
             }
         });
-
-        // return {
-        //     type: "idleend",
-        //     time_stamp: time_stamp,
-        //     //  Duration:
-        //     //  last activity time is 2 seconds *before* idlestart event fired,
-        //     //  so idle duration (idlestart to idleend) is
-        //     //  now - last_activity_time - 2 seconds
-        //     duration: time_stamp - this.last_activity_time - this.minIdleTime
-        // };
     }
 
     logActivityEvent(e) {
@@ -438,13 +414,13 @@ class ActivityEventLogger {
         let activityData = new ActivityData(event_name, event_time, event_info);
 
         //  DEBUG
-        if (["idlestart", "idleend"].includes(event_name)) {
-            console.log(`${event_name} event fired! Time: ${event_time}`);
+        // if (["idlestart", "idleend"].includes(event_name)) {
+        //     console.log(`${event_name} event fired! Time: ${event_time}`);
 
-            if (event_name == "idleend") {
-                console.log(`Idle duration: ${e.detail.duration}`);
-            }
-        }
+        //     if (event_name == "idleend") {
+        //         console.log(`Idle duration: ${e.detail.duration}`);
+        //     }
+        // }
         //  DEBUG
 
         //  3.  Log e in activity_burst.
@@ -531,7 +507,7 @@ class ActivityEventLogger {
 
     static getConsoleErrorEventInfo(e) {
         return {
-            arguments: e.arguments
+            arguments: e.detail.arguments
         };
     }
 
@@ -596,6 +572,29 @@ class ActivityEventLogger {
 }
 
 /*  Global Variables    */
+
+//  Overwrite console to track console errors
+// (from https://stackoverflow.com/questions/8000009/is-there-a-way-in-javascript-to-listen-console-events)
+let _log = console.log, _warn = console.warn, _error = console.error;
+
+console.log = function() {
+    return _log.apply(console, arguments);
+}
+
+console.warn = function() {
+    return _warn.apply(console, arguments);
+}
+
+console.error = function() {
+    //  Trigger console_error event
+    document.dispatchEvent(new CustomEvent("console_error", {
+        detail: {
+            arguments: arguments
+        }
+    }));
+
+    return _error.apply(console, arguments);
+}
 
 /*  Function Definitions    */
 
