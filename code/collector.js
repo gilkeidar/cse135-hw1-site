@@ -537,7 +537,7 @@ class ActivityEventLogger {
 
     static getIdleEndEventInfo(e) {
         return {
-            idle_duration: e.duration
+            idle_duration: e.detail.duration
         };
     }
 
