@@ -275,6 +275,7 @@ class ActivityEventLogger {
         "error",
         //  Mouse events
         "click", "contextmenu", "dblclick", "mousedown", "mouseup", 
+        "mouseenter"
         // "mouseenter", "mouseleave", "mouseout", "mouseover", "mousemove",
         // "scroll",
         // //  Keyboard events
@@ -289,6 +290,7 @@ class ActivityEventLogger {
     static user_activity_events = [
         //  Mouse events
         "click", "contextmenu", "dblclick", "mousedown", "mouseup", 
+        "mouseenter"
         // "mouseenter", "mouseleave", "mouseout", "mouseover", "mousemove",
         // "scroll",
         // //  Keyboard events
