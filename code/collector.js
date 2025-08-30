@@ -284,7 +284,7 @@ class ActivityEventLogger {
         "click",
 
         //  Custom Events (Idle start / end, console error)
-        "idlestart"
+        "idlestart", "idleend"
         
     ];
     static user_activity_events = [
@@ -368,15 +368,28 @@ class ActivityEventLogger {
 
     createIdleEndEvent() {
         let time_stamp = Date.now();
-        return {
-            type: "idleend",
-            time_stamp: time_stamp,
-            //  Duration:
-            //  last activity time is 2 seconds *before* idlestart event fired,
-            //  so idle duration (idlestart to idleend) is
-            //  now - last_activity_time - 2 seconds
-            duration: time_stamp - this.last_activity_time - this.minIdleTime
-        };
+
+        return new CustomEvent("idleend", {
+            detail: {
+                time_stamp: time_stamp,
+                //  Duration:
+                //  last activity time is 2 seconds *before* idlestart event 
+                //  fired, so idle duration (idlestart to idleend) is
+                //  now - last_activity_time - 2 seconds
+                duration: time_stamp - this.last_activity_time 
+                    - this.minIdleTime
+            }
+        });
+
+        // return {
+        //     type: "idleend",
+        //     time_stamp: time_stamp,
+        //     //  Duration:
+        //     //  last activity time is 2 seconds *before* idlestart event fired,
+        //     //  so idle duration (idlestart to idleend) is
+        //     //  now - last_activity_time - 2 seconds
+        //     duration: time_stamp - this.last_activity_time - this.minIdleTime
+        // };
     }
 
     logActivityEvent(e) {
@@ -395,7 +408,8 @@ class ActivityEventLogger {
                 //      NOTE: To avoid infinite loop, "idleend" must not be
                 //      included in ActivityEventLogger.user_activity_events!
                 let idle_end_event = this.createIdleEndEvent();
-                this.logActivityEvent(idle_end_event);
+                document.dispatchEvent(idle_end_event);
+                // this.logActivityEvent(idle_end_event);
             }
 
             //  2.  Reset idle tracking
