@@ -819,6 +819,10 @@ function loadEventHandler() {
             console.log(error);
         }
     }, ACTIVITY_COLLECTION_PERIOD);
+
+    //  5.  Dispatch a "visibilitychange" event to note that the user has
+    //      entered this page.
+    document.dispatchEvent(new Event("visibilitychange"));
 }
 
 /*  Set-up  */
