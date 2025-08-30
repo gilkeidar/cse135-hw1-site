@@ -442,7 +442,7 @@ class ActivityEventLogger {
             console.log(`${event_name} event fired! Time: ${event_time}`);
 
             if (event_name == "idleend") {
-                console.log(`Idle duration: ${e.duration}`);
+                console.log(`Idle duration: ${e.detail.duration}`);
             }
         }
         //  DEBUG
