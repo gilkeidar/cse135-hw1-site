@@ -266,10 +266,20 @@ class ActivityBurst {
             //  Set burst_end timestamp to the given activityData's timestamp.
             this.burst_end = activityData.time_stamp;
         }
+        else {
+            console.error("ActivityBurst is full! Can't push more ActivityData"
+                + " objects to it.");
+        }
     }
 }
 
+/**
+ * Class that takes care of continuous activity event logging.
+ */
 class ActivityEventLogger {
+    /**
+     * List of monitored continuous activity events.
+     */
     static activity_events = [
         //  Error events
         "error",
@@ -286,6 +296,11 @@ class ActivityEventLogger {
         "idlestart", "idleend", "console_error"
         
     ];
+
+    /**
+     * List of monitored continuous activity events that will be treated as user
+     * action (i.e., that will be seen as the user not being "idle")
+     */
     static user_activity_events = [
         //  Mouse events
         "click", "contextmenu", "dblclick", "mousedown", "mouseup", 
@@ -297,6 +312,12 @@ class ActivityEventLogger {
         "visibilitychange"
     ];
 
+    /**
+     * ActivityEventLogger constructor.
+     * @param {boolean} set_events_and_track_idleness True by default; only
+     * reason this parameter exists is to avoid unwanted side effects if this
+     * object is created more than once for multiple sessions.
+     */
     constructor(set_events_and_track_idleness = true) {
         console.log("Creating ActivityEventLogger object.");
 
@@ -318,22 +339,31 @@ class ActivityEventLogger {
         }
     }
 
+    /**
+     * Reset idle tracking (i.e., assume that user right now is not idle, and
+     * thus countdown to start of idleness should be reset).
+     */
     resetIdleTracking() {
         console.log("resetIdleTracking().");
 
         this.last_activity_time = Date.now();
         this.isIdle = false;
+
         setTimeout(() => {
-            // this.idleStartEventHandler();
             this.idleStartEventTrigger();
         }, this.minIdleTime);
     }
 
+    /**
+     * Trigger idlestart event if the user has been idle for minIdleTime
+     * milliseconds.
+     */
     idleStartEventTrigger() {
         let current_time = Date.now();
         if (!this.isIdle 
             && current_time - this.last_activity_time > this.minIdleTime) {
             console.log("idlestart event fired.");
+
             this.isIdle = true;
 
             let idle_start_event = new CustomEvent("idlestart", {
@@ -346,6 +376,10 @@ class ActivityEventLogger {
         }
     }
 
+    /**
+     * Creates an idleend event.
+     * @returns Custom idleend event.
+     */
     createIdleEndEvent() {
         let time_stamp = Date.now();
 
@@ -353,15 +387,19 @@ class ActivityEventLogger {
             detail: {
                 time_stamp: time_stamp,
                 //  Duration:
-                //  last activity time is 2 seconds *before* idlestart event 
-                //  fired, so idle duration (idlestart to idleend) is
-                //  now - last_activity_time - 2 seconds
+                //  last activity time is minIdleTime ms *before* idlestart 
+                //  event fired, so idle duration (idlestart to idleend) is 
+                //  now - last_activity_time - minIdleTime
                 duration: time_stamp - this.last_activity_time 
                     - this.minIdleTime
             }
         });
     }
 
+    /**
+     * Log that continuous activity event e has occurred.
+     * @param {Event} e Event that should be logged.
+     */
     logActivityEvent(e) {
         console.log(`${e.type} event fired!`);
         console.log(e);
@@ -379,7 +417,6 @@ class ActivityEventLogger {
                 //      included in ActivityEventLogger.user_activity_events!
                 let idle_end_event = this.createIdleEndEvent();
                 document.dispatchEvent(idle_end_event);
-                // this.logActivityEvent(idle_end_event);
             }
 
             //  2.  Reset idle tracking
@@ -399,6 +436,7 @@ class ActivityEventLogger {
             event_time = e.detail.time_stamp;
         }
         else {
+            //  Otherwise, use current time
             event_time = Date.now();
         }
 
@@ -415,6 +453,11 @@ class ActivityEventLogger {
         this.writeActivityBurstToLocalStorage();
     }
 
+    /**
+     * Returns event info for an "error" event.
+     * @param {Event} e Error event
+     * @returns Event info object for the given event.
+     */
     static getErrorEventInfo(e) {
         return {
             message: event.message,
@@ -425,6 +468,11 @@ class ActivityEventLogger {
         };
     }
 
+    /**
+     * Given a mouse event, this returns the coordinates of the mouse cursor.
+     * @param {Event} e Mouse event
+     * @returns Coordinates of the mouse cursor.
+     */
     static getMouseCoordinates(e) {
         return {
             clientX: e.clientX,
@@ -432,6 +480,12 @@ class ActivityEventLogger {
         };
     }
 
+    /**
+     * Given a button index (from a mouse event), this returns a string that
+     * represents the mouse button that the button index likely corresponds to.
+     * @param {Number} button_index Button index (from a mouse event)
+     * @returns String that represents the mouse button
+     */
     static identifyMouseButton(button_index) {
         //  Identify the mouse button based on its button_index in a mouse
         //  event.
@@ -447,6 +501,12 @@ class ActivityEventLogger {
         }
     }
 
+    /**
+     * Given an Event target, this returns an object with possible identifying
+     * features of that target.
+     * @param {Object} target Event target to identify
+     * @returns an object with possible identifying features of the target.
+     */
     static identifyTarget(target) {
         return {
             id: target.id,
@@ -455,6 +515,12 @@ class ActivityEventLogger {
         };
     }
 
+    /**
+     * Given a mouse click-style event (e.g., "click", "contextmenu", etc.),
+     * this returns an object with relevant information about the event.
+     * @param {Event} e Mouse click-style event
+     * @returns Object with relevant information about the click event.
+     */
     static getClickEventInfo(e) {
         return {
             coordinates: ActivityEventLogger.getMouseCoordinates(e),
@@ -463,6 +529,12 @@ class ActivityEventLogger {
         };
     }
 
+    /**
+     * Given a non-click mouse event (e.g., "mousemove"), this returns an object
+     * with relevant information about the event.
+     * @param {Event} e Non-click mouse event
+     * @returns Object with relevant information about the mouse event.
+     */
     static getMouseEventInfo(e) {
         return {
             coordinates: ActivityEventLogger.getMouseCoordinates(e),
@@ -470,6 +542,12 @@ class ActivityEventLogger {
         };
     }
 
+    /**
+     * Given a mouse "scroll" event, this returns an object with relevant
+     * information about the event.
+     * @param {Event} e "scroll" event
+     * @returns An object with relevant information about the "scroll" event.
+     */
     static getScrollEventInfo(e) {
         return {
             target: ActivityEventLogger.identifyTarget(e.target),
@@ -482,12 +560,24 @@ class ActivityEventLogger {
         };
     }
 
+    /**
+     * Given a keyboard event (e.g., "keypress"), this returns an object with
+     * the pressed key.
+     * @param {Event} e Keyboard event
+     * @returns Object with the pressed key
+     */
     static getKeyEventInfo(e) {
         return {
             key: e.key
         };
     }
 
+    /**
+     * Given a "visibilitychange" event, this returns an object with information
+     * regarding whether the user entered or left the page and which page it is.
+     * @param {Event} e "visibilitychange" event
+     * @returns Object with information regarding the "visibilitychange" event
+     */
     static getVisibilityChangeEventInfo(e) {
         let userEnteredPage = document.visibilityState == "visible";
         return {
@@ -496,18 +586,39 @@ class ActivityEventLogger {
         };
     }
 
+    /**
+     * Given a custom "console_error" event, this returns an object that
+     * contains the arguments given to the console.
+     * @param {CustomEvent} e "console_error" custom event
+     * @returns Object that contains the arguments given to the console when the
+     * event fired.
+     */
     static getConsoleErrorEventInfo(e) {
         return {
             arguments: e.detail.arguments
         };
     }
 
+    /**
+     * Given a custom "idleend" event, this returns an object that contains the
+     * duration of the user's idle time since the last "idlestart" event fired.
+     * @param {CustomEvent} e "idleend" custom event
+     * @returns Object that contains the duration of the user's idle time since
+     * the last "idlestart" event fired.
+     */
     static getIdleEndEventInfo(e) {
         return {
             idle_duration: e.detail.duration
         };
     }
 
+    /**
+     * Given an event, this returns a smaller object containing the relevant
+     * information we want to monitor from that event.
+     * @param {Event} e Event to monitor
+     * @returns Smaller object containing the relevant information from the 
+     * event
+     */
     static getEventInfo(e) {
         console.log("getActivityFromEvent()");
 
@@ -545,6 +656,11 @@ class ActivityEventLogger {
         }
     }
 
+    /**
+     * Attempts to write the ActivityEventLogger's activity_burst to
+     * localStorage (assuming that it is currently not set in localStorage and
+     * that there's at least one ActivityData in the activity_burst).
+     */
     writeActivityBurstToLocalStorage() {
         console.log("writeActivityBurstToLocalStorage().");
         if (!localStorage.getItem(ls_ACTIVITY_BURST) 
@@ -644,6 +760,10 @@ function createUserSession() {
     localStorage.setItem(ls_USER_SESSION, JSON.stringify(user_session));
 }
 
+/**
+ * Attempts to send the UserSession object (containing static and performance
+ * data) to the server. The UserSession object is sent only once per session.
+ */
 async function sendUserSessionObject() {
     console.log("sendUserSessionObject()");
 
@@ -676,6 +796,11 @@ async function sendUserSessionObject() {
     }
 }
 
+/**
+ * Attempts to send the ActivityBurst object in localStorage to the server.
+ * @param {ActivityEventLogger} activity_event_logger The ActivityEventLogger
+ * whose activity_burst is written to localStorage.
+ */
 async function sendActivityBurstObject(activity_event_logger) {
     console.log("sendActivityBurstObject()");
 
@@ -714,6 +839,9 @@ async function sendActivityBurstObject(activity_event_logger) {
     }
 }
 
+/**
+ * Event handler for the "load" event.
+ */
 function loadEventHandler() {
     console.log("loadEventHandler()");
 
