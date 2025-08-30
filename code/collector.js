@@ -275,7 +275,7 @@ class ActivityEventLogger {
         "error",
         //  Mouse events
         "click", "contextmenu", "dblclick", "mousedown", "mouseup", 
-        "mouseenter"
+        "mouseenter",
         // "mouseenter", "mouseleave", "mouseout", "mouseover", "mousemove",
         // "scroll",
         // //  Keyboard events
