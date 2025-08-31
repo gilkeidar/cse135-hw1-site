@@ -1,10 +1,21 @@
-//  collector.js script (Checkpoint 2 Version)
+//  collector.js script (Checkpoint 1 Version)
 //  This collector.js script does the following:
-//  1.  Collects static and performance data once per session and sends it to
-//      the REST endpoint at /api/user-sessions.
-//  2.  Continuously collects activity (i.e., event) data and sends it in
-//      batches every ACTIVITY_COLLECTION_PERIOD milliseconds to the REST
-//      endpoint at /api/activity-bursts.
+//  1.  Sets up / loads a session in localStorage (including user id).
+//      *   Note: This means that session information is generated on the client
+//          side. Since the session information is only used for analytics, this
+//          doesn't fundamentally pose a security problem, but it is limiting
+//          (since data collected without this script cannot be attributed to a
+//          particular session).
+//          This will be changed in Checkpoint 2 forwards by using an Apache
+//          server module to generate session id and user id cookies (all
+//          requests to the REST endpoint will include these cookies and so the
+//          REST endpoint will be able to "stamp" all incoming data with the
+//          particular user and session to which it is attributed).
+//  2.  Collects static and performance data once per session and sends it to
+//      the mock REST endpoint at /json/user-sessions.
+//  3.  Continuously collects activity (i.e., event) data and sends it in
+//      batches every ACTIVITY_COLLECTION_PERIOD milliseconds to the mock REST
+//      endpoint at /json/activity-bursts.
 
 /*  Constants  */
 
@@ -30,6 +41,12 @@ const NUM_DIGITS = 10;
 const ID_ALPHABET_SIZE = NUM_LETTERS * 2 + NUM_DIGITS;
 
 /**
+ * Session time length (30 minutes in ms)
+ * (30 min * (60 sec / min) * (1000 ms / sec))
+ */
+const MAX_SESSION_TIME = 30 * 60 * 1000;
+
+/**
  * Activity collection period interval (in ms)
  * (10 sec * (1000 ms / sec))
  */
@@ -41,6 +58,16 @@ const ACTIVITY_COLLECTION_PERIOD = 10 * 1000;
  * (2 sec * (1000 ms / sec))
  */
 const MIN_IDLE_TIME = 2 * 1000;
+
+/**
+ * localStorage key name for storing a user id.
+ */
+const ls_USER_ID = "user_id";
+
+/**
+ * localStorage key name for storing a session id.
+ */
+const ls_SESSION_ID = "session_id";
 
 /**
  * localStorage key name for storing a stringified JSON object representing the
@@ -55,15 +82,20 @@ const ls_USER_SESSION = "user_session";
 const ls_ACTIVITY_BURST = "activity_burst";
 
 /**
- * URL of REST endpoint to POST UserSession data to (once per session).
+ * localStorage key name for the timestamp of the start of the user session.
  */
-const USER_SESSION_ENDPOINT = "https://gilkeidar.com/api/user-sessions";
+const ls_SESSION_START = "session_start";
 
 /**
- * URL of REST endpoint to POST ActivityBurst data to (once per
+ * URL of mock REST endpoint to POST UserSession data to (once per session).
+ */
+const USER_SESSION_ENDPOINT = "https://gilkeidar.com/json/user-sessions";
+
+/**
+ * URL of mock REST endpoint to POST ActivityBurst data to (once per
  * ACTIVITY_COLLECTION_PERIOD).
  */
-const ACTIVITY_BURST_ENDPOINT = "https://gilkeidar.com/api/activity-bursts";
+const ACTIVITY_BURST_ENDPOINT = "https://gilkeidar.com/json/activity-bursts";
 
 /**
  * Class that stores static data collected about the current user session.
@@ -145,9 +177,13 @@ class PerformanceData {
 class UserSession {
     /**
      * UserSession constructor. Creates StaticData and PerformanceData objects.
+     * @param {String} id ID of the current user session.
+     * @param {String} user_id ID of the current user.
      */
-    constructor() {
+    constructor(id, user_id) {
         console.log("Creating UserSession object.");
+        this.id = id;
+        this.user_id = user_id;
         this.static_data = new StaticData();
         this.performance_data = new PerformanceData();
     }
@@ -186,11 +222,17 @@ class ActivityBurst {
     static MAX_ACTIVITY_BURST_SIZE = 10000;
 
      /**
-      * ActivityBurst constructor.
-      */
+     * ActivityBurst constructor. Marks this ActivityBurst with the current user
+     * session ID and initializes the ActivityData array.
+     * @note This method assumes that the user session ID has already been set
+     * up in localStorage.
+     */
     constructor() {
         console.log("Creating ActivityBurst object.");
 
+        //  Mark the ActivityBurst with the session ID. (Requires session to be
+        //  setup).
+        this.session_id = localStorage.getItem(ls_SESSION_ID);
         this.burst_start = 0;
         this.burst_end = 0;
         this.activity = [];
@@ -272,24 +314,29 @@ class ActivityEventLogger {
 
     /**
      * ActivityEventLogger constructor.
+     * @param {boolean} set_events_and_track_idleness True by default; only
+     * reason this parameter exists is to avoid unwanted side effects if this
+     * object is created more than once for multiple sessions.
      */
-    constructor() {
+    constructor(set_events_and_track_idleness = true) {
         console.log("Creating ActivityEventLogger object.");
 
         //  Initial setup.
         //  1.  Setup activity burst.
         this.activity_burst = new ActivityBurst();
 
-        //  2.  Setup event handling
-        for (let event_name of ActivityEventLogger.activity_events) {
-            document.addEventListener(event_name, (e) => {
-                this.logActivityEvent(e);
-            });
-        }
+        //  2.  Assign event handler to every activity event we want to log.
+        if (set_events_and_track_idleness) {
+            for (let event_name of ActivityEventLogger.activity_events) {
+                document.addEventListener(event_name, (e) => {
+                    this.logActivityEvent(e);
+                });
+            }
 
-        //  3.  Begin tracking user idleness
-        this.minIdleTime = MIN_IDLE_TIME;
-        this.resetIdleTracking();
+            //  3.  Begin tracking user idleness
+            this.minIdleTime = MIN_IDLE_TIME;
+            this.resetIdleTracking();
+        }
     }
 
     /**
@@ -413,11 +460,11 @@ class ActivityEventLogger {
      */
     static getErrorEventInfo(e) {
         return {
-            message: e.message,
-            filename: e.filename,
-            lineno: e.lineno,
-            colno: e.colno,
-            error: e.error
+            message: event.message,
+            filename: event.filename,
+            lineno: event.lineno,
+            colno: event.colno,
+            error: event.error
         };
     }
 
@@ -657,6 +704,63 @@ console.error = function() {
 /*  Function Definitions    */
 
 /**
+ * Generate a random user or session ID string of the given length.
+ * @param {Number} id_length 
+ */
+function generateID(id_length) {
+    let id = "";
+    for (let i = 0; i < ID_LENGTH; i++) {
+        let rIndex = Math.floor(Math.random() * ID_ALPHABET_SIZE);
+
+        if (rIndex < NUM_LETTERS) {
+            //  Append lower-case letter
+            id += String.fromCharCode("a".charCodeAt(0) + rIndex);
+        }
+        else if (rIndex < NUM_LETTERS * 2) {
+            //  Append upper-case letter
+            id += String.fromCharCode("A".charCodeAt(0) + rIndex - NUM_LETTERS);
+        }
+        else {
+            //  Append digit
+            id += String.fromCharCode("0".charCodeAt(0) 
+                + rIndex - (2 * NUM_LETTERS));
+        }
+    }
+
+    return id;
+}
+
+/**
+ * Creates new user session.
+ * @note This function overrides the session_id, user_session, and session_start
+ * key-value pairs in localStorage.
+ * @note This function assumes that the user_id key-value pair is already set in
+ * localStorage.
+ */
+function createUserSession() {
+    console.log("createUserSession()");
+
+    //  1.  Generate a new session_id and store it in localStorage.
+    let session_id = generateID();
+
+    console.log(`Creating new user session with id ${session_id} in `
+        + `localStorage.`);
+    localStorage.setItem(ls_SESSION_ID, session_id);
+
+    //  2.  Set session_start to the current time in localStorage.
+    let session_start = new Date();
+    localStorage.setItem(ls_SESSION_START, session_start.toUTCString());
+
+    //  3.  Create a new UserSession object and fill it with static and 
+    //      performance data.
+    let user_id = localStorage.getItem(ls_USER_ID);
+    let user_session = new UserSession(session_id, user_id);
+
+    //  4.  Store the UserSession object in localStorage as a stringified JSON.
+    localStorage.setItem(ls_USER_SESSION, JSON.stringify(user_session));
+}
+
+/**
  * Attempts to send the UserSession object (containing static and performance
  * data) to the server. The UserSession object is sent only once per session.
  */
@@ -741,36 +845,91 @@ async function sendActivityBurstObject(activity_event_logger) {
 function loadEventHandler() {
     console.log("loadEventHandler()");
 
-    //  1.  Setup an ActivityEventLogger.
+    //  1.  User and Session ID setup.
+    //  NOTE: This is only for checkpoint 1. This logic will be removed and
+    //  replaced with server-assigned user ID and session ID cookies for
+    //  checkpoint 2 onwards.
+    //      1.  Determine whether a user already exists; if not, generate a new
+    //          ID and a new user session.
+    if (!localStorage.getItem(ls_USER_ID)) {
+        console.log("Unknown user - creating a new user ID.");
+
+        let user_id = generateID();
+
+        console.log(`Storing user ID ${user_id} in localStorage.`);
+        localStorage.setItem(ls_USER_ID, user_id);
+
+        console.log("Creating a new session for the user.");
+        createUserSession();
+    }
+    else {
+        //  2.  The user does exist - determine whether a user session already
+        //      exists.
+        console.log(
+            `User is known with ID ${localStorage.getItem(ls_USER_ID)}.`
+        );
+
+        //  Get user session ID (if it exists)
+        let session_id = localStorage.getItem(ls_SESSION_ID);
+
+        if (!session_id) {
+            //  1.  A user session does not exist - create one.
+            console.log("A user session does not exist - creating one.");
+
+            createUserSession();
+        }
+        else {
+            //  2.  A user session does exist.
+            console.log(`User session does exist with session id `
+                + `${session_id}.`
+            );
+
+            //      1.  Setup ActivityEventLogger for old session (without
+            //          setting up events or idle tracking).
+            let activity_event_logger = new ActivityEventLogger(false);
+            
+            //      2.  Send any unsent data of the previous user session.
+            console.log(`Sending any unset data of session ${session_id}.`);
+            try {
+                sendUserSessionObject();
+                sendActivityBurstObject(activity_event_logger);
+            } catch (error) {
+                console.error(error);
+            }
+
+            //      3.  If the user session has expired, create a new user
+            //          session.
+            let session_start =
+                Date.parse(localStorage.getItem(ls_SESSION_START));
+            let current_time = new Date();
+            
+            if (isNaN(session_start)
+                || Math.abs(current_time - session_start) > MAX_SESSION_TIME) {
+                console.log("Past session is either invalid or expired - "
+                    + "creating new session.");
+
+                createUserSession();
+            }
+        }
+    }
+
+    //  2.  Setup ActivityEventLogger (if necessary).
     let activity_event_logger = new ActivityEventLogger();
 
-    //  2.  Send any unsent data.
+    //  3.  Send current UserSession data to the server.
+    console.log("Sending current user session data (if necessary).");
+
     try {
         sendUserSessionObject();
-        sendActivityBurstObject(activity_event_logger);
-    } catch (error) {
+    } catch(error) {
         console.error(error);
     }
 
-    //  3.  Create UserSession object.
-    let user_session = new UserSession();
-
-    //  4.  Save UserSession to localStorage.
-    localStorage.setItem(ls_USER_SESSION, JSON.stringify(user_session));
-
-    //  5.  Send current UserSession data to the server.
-    try {
-        sendUserSessionObject();
-    } catch (error) {
-        console.error(error);
-    }
-
-    //  6.  Setup sending UserSession and ActivityBurst data to the server every
+    //  4.  Setup sending UserSession and ActivityBurst data to the server every
     //      ACTIVITY_COLLECTION_PERIOD seconds.
     setInterval(() => {
-        console.log(`Sending data to server (every
-            ${ACTIVITY_COLLECTION_PERIOD} milliseconds).`);
-
+        console.log(`Sending data to server (every `
+                    + `${ACTIVITY_COLLECTION_PERIOD} milliseconds).`);
         try {
             sendUserSessionObject();
             sendActivityBurstObject(activity_event_logger);
