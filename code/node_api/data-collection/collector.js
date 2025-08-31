@@ -768,6 +768,9 @@ async function createUserSession() {
 
         if (response.ok) {
             console.log("Session already logged - not logging!");
+
+            //  Remove it from localStorage if it exists.
+            localStorage.removeItem(ls_USER_SESSION);
             return;
         }
         else {
