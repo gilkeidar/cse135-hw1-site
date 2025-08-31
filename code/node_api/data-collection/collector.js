@@ -65,6 +65,10 @@ const USER_SESSION_ENDPOINT = "https://gilkeidar.com/api/user-sessions";
  */
 const ACTIVITY_BURST_ENDPOINT = "https://gilkeidar.com/api/activity-bursts";
 
+//	Cookie names
+const SESSION_ID = "session_id";
+const USER_ID = "user_id";
+
 /**
  * Class that stores static data collected about the current user session.
  */
@@ -735,6 +739,59 @@ async function sendActivityBurstObject(activity_event_logger) {
     }
 }
 
+function getCookies() {
+    let cookieArray = document.cookie.split('; ');
+    let cookies = {};
+    for (let cookieString of cookieArray) {
+        let cookieKeyValue = cookieString.split('=');
+        cookies[cookieKeyValue[0]] = cookieKeyValue[1];
+    }
+
+    return cookies;
+}
+
+async function createUserSession() {
+    console.log("createUserSession()");
+    //  1.  First, check whether this session has already been recorded by the
+    //      server.
+    let session_id = cookies[SESSION_ID];
+
+    if (session_id != null) {
+        console.log(`Session ID cookie exists with value ${session_id}.`);
+        console.log("Checking to see whether it has been written to the server"
+            + " already..."
+        );
+
+        const response = await fetch(`${USER_SESSION_ENDPOINT}/${session_id}`, {
+            method: "GET"
+        });
+
+        if (response.ok) {
+            console.log("Session already logged - not logging!");
+            return;
+        }
+        else {
+            console.log("Session not logged - logging!");
+        }
+    }
+    else {
+        console.log("Session ID cookie doesn't exist. Logging!");
+    }
+
+    //  2.  Create a new UserSession object.
+    let user_session = new UserSession();
+
+    //  3.  Save UserSession to localStorage.
+    localStorage.setItem(ls_USER_SESSION, JSON.stringify(user_session));
+
+    //  4.  Send current UserSession data to the server.
+    try {
+        sendUserSessionObject();
+    } catch (error) {
+        console.error(error);
+    }
+}
+
 /**
  * Event handler for the "load" event.
  */
@@ -752,17 +809,12 @@ function loadEventHandler() {
         console.error(error);
     }
 
-    //  3.  Create UserSession object.
-    let user_session = new UserSession();
-
-    //  4.  Save UserSession to localStorage.
-    localStorage.setItem(ls_USER_SESSION, JSON.stringify(user_session));
-
-    //  5.  Send current UserSession data to the server.
+    //  3.  Create UserSession object, store it in localStorage, and send it to
+    //      the server if this is a new session.
     try {
-        sendUserSessionObject();
+        createUserSession();
     } catch (error) {
-        console.error(error);
+        console.log(error);
     }
 
     //  6.  Setup sending UserSession and ActivityBurst data to the server every
