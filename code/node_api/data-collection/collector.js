@@ -754,7 +754,7 @@ async function createUserSession() {
     console.log("createUserSession()");
     //  1.  First, check whether this session has already been recorded by the
     //      server.
-    let session_id = cookies[SESSION_ID];
+    let session_id = getCookies()[SESSION_ID];
 
     if (session_id != null) {
         console.log(`Session ID cookie exists with value ${session_id}.`);
