@@ -34,6 +34,14 @@
         const response = await fetch("https://gilkeidar.com/api/activity-bursts");
         const data = await response.json();
         console.log(data);
+
+        for (let activity_burst of data) {
+            for (let activityData of activity_burst.activity) {
+                activityGrid.insertRow({
+                    "Session Id": activity_burst.session_id
+                })
+            }
+        }
     });
 </script>
 </body>
