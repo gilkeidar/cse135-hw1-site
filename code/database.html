@@ -16,7 +16,8 @@
         src="https://gilkeidar.com/api/activity-bursts"
     ></zing-grid>
 
-    <zing-grid id="user-activity">
+    <zing-grid id="user-activity" sort search pager page-size=3 
+        page-size-options="2, 3, 6, 10">
         <zg-caption>User Activity (in bursts of 10 seconds)</zg-caption>
         <zg-colgroup>
             <zg-column type="text" index="Session Id"></zg-column>
@@ -38,8 +39,11 @@
         for (let activity_burst of data) {
             for (let activityData of activity_burst.activity) {
                 activityGrid.insertRow({
-                    "Session Id": activity_burst.session_id
-                })
+                    "Session Id": activity_burst.session_id,
+                    "Event": activityData.event_name,
+                    "Timestamp": activityData.time_stamp,
+                    "Event Information": activityData.event_info
+                });
             }
         }
     });
