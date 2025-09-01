@@ -36,16 +36,31 @@
         const data = await response.json();
         console.log(data);
 
+        let gridData = [];
+
         for (let activity_burst of data) {
             for (let activityData of activity_burst.activity) {
-                activityGrid.insertRow({
+                gridData.push({
                     "Session Id": activity_burst.session_id,
                     "Event": activityData.event_name,
                     "Timestamp": activityData.time_stamp,
-                    "Event Information": JSON.stringify(activityData.event_info, null, 4)
+                    "Event Information": JSON.stringify(activityData.event_info, null, 2)
                 });
             }
         }
+
+        activityGrid.setData(gridData);
+
+        // for (let activity_burst of data) {
+        //     for (let activityData of activity_burst.activity) {
+        //         activityGrid.insertRow({
+        //             "Session Id": activity_burst.session_id,
+        //             "Event": activityData.event_name,
+        //             "Timestamp": activityData.time_stamp,
+        //             "Event Information": JSON.stringify(activityData.event_info, null, 2)
+        //         });
+        //     }
+        // }
     });
 </script>
 </body>
