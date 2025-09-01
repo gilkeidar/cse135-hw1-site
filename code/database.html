@@ -42,7 +42,7 @@
                     "Session Id": activity_burst.session_id,
                     "Event": activityData.event_name,
                     "Timestamp": activityData.time_stamp,
-                    "Event Information": JSON.stringify(activityData.event_info)
+                    "Event Information": JSON.stringify(activityData.event_info, null, 2)
                 });
             }
         }
