@@ -32,7 +32,8 @@
 
         //  1.  Get user activity data (populate grid)
         const response = await fetch("https://gilkeidar.com/api/activity-bursts");
-        console.log(response.json());
+        const data = await response.json();
+        console.log(data);
     });
 </script>
 </body>
