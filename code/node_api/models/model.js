@@ -1,14 +1,10 @@
 //  Model for MongoDB
 
-//	For reading db.json (REPLACE WITH ACTUAL DATABASE)
-// import fs from 'fs';
+//	For reading Database URI from a file on the server
+import fs from 'fs';
 
 //  For connecting to mongodb
-import { MongoClient, ObjectId } from "mongodb";
-
-const uri = "mongodb://localhost:27017";
-
-// const fs = require('fs');
+import { MongoClient, ObjectId, ServerApiVersion } from "mongodb";
 
 class Model {
     constructor() {
@@ -23,10 +19,23 @@ class Model {
 
     async setupDatabase() {
         //  Setup MongoDB client
-        this.client = new MongoClient(uri);
+
+        //  Read URI from file on server for security
+        let uri = fs.readFileSync("/var/www/gilkeidar.com/public_html/node_api/models/db_uri.txt").toString();
+
+        this.client = new MongoClient(uri, {
+            serverApi: {
+                version: ServerApiVersion.v1,
+                strict: true,
+                deprecationErrors: true
+            }
+        });
 
         //  Connect the client
         await this.client.connect();
+
+        await this.client.db("admin").command({ ping: 1});
+        console.log("Pinged your deployment. You successfully connected to MongoDB!");
 
         //  List databases
         let dataBasesList = await this.client.db().admin().listDatabases();
