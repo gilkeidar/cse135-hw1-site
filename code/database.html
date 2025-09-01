@@ -55,8 +55,18 @@
 
         setActivityGridData(activityGrid);
 
+        let lastRefreshTime = Date.now();
+
         activityGrid.addEventListener('grid:refresh', (e) => {
+            console.log("grid:refresh event fired.");
             console.log(e);
+
+            if (Date.now() - lastRefreshTime > 10000) {
+                console.log("Updating data.");
+                lastRefreshTime = Date.now();
+                setActivityGridData(activityGrid);
+            }
+
             // console.log("grid:beforerender event fired.");
             // setActivityGridData(activityGrid);
         })
