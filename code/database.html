@@ -55,10 +55,11 @@
 
         setActivityGridData(activityGrid);
 
-        // activityGrid.addEventListener('grid:beforerender', (e) => {
-        //     console.log("grid:beforerender event fired.");
-        //     setActivityGridData(activityGrid);
-        // })
+        activityGrid.addEventListener('grid:refresh', (e) => {
+            console.log(e);
+            // console.log("grid:beforerender event fired.");
+            // setActivityGridData(activityGrid);
+        })
         
 
         // for (let activity_burst of data) {
