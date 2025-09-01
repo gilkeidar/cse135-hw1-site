@@ -66,14 +66,16 @@
             //  1.  User clicks refresh button.
             //  2.  grid:refresh event is triggered, and this event handler is
             //      run.
-            //  3.  Let t = current time and t_0 be last time grid:refresh
+            //  3.  Let t be the current time and t_0 be last time grid:refresh
             //          fired where setActivityGridData() was called.
             //  4.  If t - t_0 > x:
             //      1.  Set t_0 to t.
             //      2.  setActivityGridData() is called.
             //  5.  Since setActivityGridData() is called, grid:refresh is
             //      triggered again.
-            //  6.  t is now t' and t_0 is t.
+            //  6.  Let t' be the current time and t is the last time that
+            //          grid:refresh fired where setActivityGridData() was
+            //          called.
             //  7.  x should be chosen so that t' - t <= x (to avoid calling
             //          setActivityGridData() again without cause).
             //      *   x should therefore be some multiple of the time it takes
