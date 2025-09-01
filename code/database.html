@@ -15,5 +15,27 @@
         sort search pager page-size=3 page-size-options="2, 3, 6"
         src="https://gilkeidar.com/api/activity-bursts"
     ></zing-grid>
+
+    <zing-grid id="user-activity">
+        <zg-caption>User Activity (in bursts of 10 seconds)</zg-caption>
+        <zg-colgroup>
+            <zg-column type="text" index="Session Id"></zg-column>
+            <zg-column type="text" index="Event"></zg-column>
+            <zg-column type="number" index="Timestamp"></zg-column>
+            <zg-column type="text" index="Event Information"></zg-column>
+        </zg-colgroup>
+    </zing-grid>
+
+<script>
+    
+
+    document.addEventListener("load", async e => {
+        const activityGrid = document.querySelector('#user-activity');
+
+        //  1.  Get user activity data (populate grid)
+        const response = await fetch("https://gilkeidar.com/api/activity-bursts");
+        console.log(response.json());
+    });
+</script>
 </body>
 </html>
