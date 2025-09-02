@@ -747,7 +747,7 @@ async function sendActivityBurstObject(activity_event_logger) {
                 "Content-Type": "application/json"
             },
             body: activity_burst_string
-        });
+        }); 
 
         if (response.ok) {
             console.log("Sending ActivityBurst object succeeded, clearing it"
