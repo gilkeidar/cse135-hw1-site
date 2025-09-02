@@ -288,8 +288,16 @@
                 });
             }
 
-            //  Sort pageObjects by numEntryPointAccesses
-            pageObjects.sort((p1, p2) => p2.numEntryPointAccesses - p1.numEntryPointAccesses);
+            //  Sort pageObjects by numEntryPointAccesses, then by numAccesses
+            pageObjects.sort((p1, p2) => {
+                let numEntryPointAccessesDiff = p2.numEntryPointAccesses 
+                    - p1.numEntryPointAccesses;
+
+                if (numEntryPointAccessesDiff != 0)
+                    return numEntryPointAccessesDiff;
+            
+                return p2.numAccesses - p1.numAccesses;
+            });
 
             //  Create x-axis and y-axis data
             for (let page of pageObjects) {
