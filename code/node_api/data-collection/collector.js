@@ -192,7 +192,7 @@ class ActivityBurst {
      * Maximum length of an ActivityBurst's ActivityData array. (Maximum number
      * of events that can be collected in a single ACTIVITY_COLLECTION_PERIOD).
      */
-    static MAX_ACTIVITY_BURST_SIZE = 200;
+    static MAX_ACTIVITY_BURST_SIZE = 300;
 
      /**
       * ActivityBurst constructor.
