@@ -241,6 +241,13 @@ class ActivityBurst {
             //  addActivityData() to be called again (creating an infinite event
             //  loop that will only be broken when the ActivityBurst is
             //  successfully sent to the server).
+            //  Hence, to avoid this, this error message will be guarded by the
+            //  loggedFullError flag.
+            //  It's never reset to false, but that is because the
+            //  ActivityEventLogger's writeActivityBurstToLocalStorage() method
+            //  just sets its activity_burst property to a new ActivityBurst()
+            //  (so the reset involves creating a brand new ActivityBurst which
+            //  has loggedFullError set to false in the constructor).
             if (!this.loggedFullError) {
                 this.loggedFullError = true;
                 console.error("ActivityBurst is full! Can't push more ActivityData"
@@ -751,6 +758,21 @@ async function sendActivityBurstObject(activity_event_logger) {
         else {
             console.error(`Sending ActivityBurst object failed: received`
                 + ` response code ${response.status}.`);
+            
+            // if (response.status == 413) {
+                //  This means the ActivityBurst was too large - try to segment
+                //  it and send again.
+                //  NOTE: If this is done, may want to remove ActivityBurst's
+                //  max size(?)
+                //  This also gets into additional complexity, though, since in
+                //  principle it may require doing a "reverse slow-start" of
+                //  decreasing the size of the ActivityBurst sent exponentially
+                //  (e.g., send burst --> 413 --> divide burst into 2 and send
+                //  first half --> 413 --> divide first half into 2 and send
+                //  first quarter (first half of first half) --> 413 --> etc.
+                //  until receiving a success (if get a different error, like
+                //  500, just need to wait and try resending later))
+            // }
         }
     }
 }
