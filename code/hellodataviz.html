@@ -8,11 +8,28 @@
 </head>
 <body>
     <div id="sessions-visitors-and-errors"></div>
+    <div id="accesses-and-entry-points"></div>
     <!-- <div id="chartizard"></div> -->
     <!-- <div id="chartmeleon"></div> -->
     <script>
+        function generateTimeScaleText(numDays) {
+            let scaleText = [];
+            for (let i = 0; i < numDays; i++) {
+                if (i == numDays - 1) {
+                    scaleText.push('Today');
+                } else if (i == numDays - 2) {
+                    scaleText.push('Yesterday');
+                } 
+                else {
+                    scaleText.push(`${numDays - 1 - i} ds ago`);
+                }
+            }
+
+            return scaleText;
+        }
+
         // function renderLineChart(t_start, t_end) {
-        async function renderLineChart() {
+        async function renderLineChart(activity, sessionArray) {
             console.log("renderLineChart()");
             //  Line chart specification
             //  x-axis: Time, discrete (units in days)
@@ -47,17 +64,7 @@
             //  Data is for 30 days (29 days ago to today)
             let numDays = 30;
 
-            let scaleText = [];
-            for (let i = 0; i < numDays; i++) {
-                if (i == numDays - 1) {
-                    scaleText.push('Today');
-                } else if (i == numDays - 2) {
-                    scaleText.push('Yesterday');
-                } 
-                else {
-                    scaleText.push(`${numDays - 1 - i} ds ago`);
-                }
-            }
+            let scaleText = generateTimeScaleText(numDays);
 
             let errors = Array(numDays).fill(null);
             let visitors = Array(numDays).fill(null);
@@ -74,6 +81,251 @@
             //                      (as an index in the errors array).
             //                  2.  Increment errors[index] (or set it to 1 if
             //                      it is null).
+            
+
+
+            for (let activityBurst of activity) {
+                for (let activityData of activityBurst.activity) {
+                    if (activityData.event_name.includes('error')) {
+                        //  Found an error activity event!
+                        console.log("Found error!");
+                        let error_time = new Date(activityData.time_stamp);
+                        let time_diff = Date.now() - error_time;
+                        let day_diff = Math.floor(time_diff / (1000 * 60 * 60 * 24));
+                        let day_index = numDays - 1 - day_diff;
+
+                        if (errors[day_index] == null) {
+                            errors[day_index] = 1;
+                        } else {
+                            errors[day_index]++;
+                        }
+                    }
+                }
+            }
+
+            //  2.  Fill visitors series (Number of visitors per day)
+            //  3.  Fill sessions series (Number of sessions per day)
+            //      1.  Create an array of length numDays of sets of userIDs
+            //          (each index starting as an empty set) (call this 
+            //          uniqueVisitors).
+            //      1.  Send a GET request to /api/user-sessions to get a JSON
+            //          array of all UserSessions and store it in sessionArray.
+            //      2.  For each session:
+            //          1.  Determine the day it occurred.
+            //          2.  sessions[day]++.
+            //          3.  If user ID of the session doesn't exist in 
+            //              uniqueVisitors, add it.
+            //      3.  For i = 0 to numDays - 1:
+            //          1.  visitors[i] = uniqueVisitors[i].size();
+            let uniqueVisitors = Array(numDays).fill(null);
+
+            for (let session of sessionArray) {
+                let session_time = session.performance_data["page-load-end"];
+                let time_diff = Date.now() - session_time;
+                let day_diff = Math.floor(time_diff / (1000 * 60 * 60 * 24));
+                let day_index = numDays - 1 - day_diff;
+
+                if (sessions[day_index] == null) {
+                    sessions[day_index] = 1;
+                }
+                else {
+                    sessions[day_index]++;
+                }
+
+                if (uniqueVisitors[day_index] == null) {
+                    uniqueVisitors[day_index] = new Set();
+                }
+                uniqueVisitors[day_index].add(session.user_id);
+            }
+
+            for (let i = 0; i < numDays; i++) {
+                if (uniqueVisitors[i] != null) {
+                    visitors[i] = uniqueVisitors[i].size;
+                }
+            }
+
+            
+
+            //  4.  Render line chart
+            let lineConfig = {
+                theme: 'dark',
+                type: 'line',
+                title: {
+                    text: 'Sessions, Visitors, and Errors',
+                    fontSize: 24
+                },
+                legend: {
+                    draggable: true
+                },
+                scaleX: {
+                    label: {text: 'Days'},
+                    labels: scaleText
+                },
+                scaleY: {
+                    step: 1
+                },
+                series: [
+                    {
+                        values: errors,
+                        text: '# Errors',
+                        lineColor: "darkred",
+                        marker: {
+                            size: 7,
+                            backgroundColor: 'red',
+                            borderColor: 'darkred',
+                            borderWidth: '1px'
+                        }
+                    },
+                    {
+                        values: visitors,
+                        text: '# Visitors',
+                        lineColor: "darkgreen",
+                        marker: {
+                            size: 7,
+                            backgroundColor: 'green',
+                            borderColor: 'darkgreen',
+                            borderWidth: '1px'
+                        }
+                    },
+                    {
+                        values: sessions,
+                        text: '# Sessions (Visits)',
+                        lineColor: "lightblue",
+                        marker: {
+                            size: 7,
+                            backgroundColor: 'DeepSkyBlue',
+                            borderColor: 'lightblue',
+                            borderWidth: '1px'
+                        }
+                    }
+                ]
+            };
+
+            zingchart.render({
+                id: 'sessions-visitors-and-errors',
+                data: lineConfig
+            });
+        }
+
+        async function renderBarChart(activity, sessionArray) {
+            console.log("renderBarChart()");
+            //  Line chart specification
+            //  x-axis: pages in site that have been accessed
+            //  y-axis: # of occurrences (over the time period of data queried)
+            //  Two series:
+            //      1.  # of accesses
+            //      2.  # of accesses as an entry point
+
+            //  1.  Create an object of key-value pairs where the key is the
+            //      URL and the value is an object with property for numAccesses
+            //      and numEntryPointAccesses.
+            let pageAccesses = {};
+            //  2.  Start by iterating through sessionArray then activityData
+            for (let session of sessionArray) {
+                let url = session.static_data["entry-point"];
+
+                if (url in pageAccesses) {
+                    pageAccesses[url].numEntryPointAccesses++;
+                } else {
+                    //  NOTE: The reason numAccesses is counted as 0 here and
+                    //  not 1 is to avoid double counting, since when a page is
+                    //  opened, the entry point access is counted by the
+                    //  UserSessions.static_data["entry-point"] property while
+                    //  the access is also counted by an visibilitychange event.
+                    //  We shall count the visibilitychange events separately.
+                    pageAccesses[url] = {
+                        numAccesses: 0,
+                        numEntryPointAccesses: 1
+                    };
+                }
+            }
+
+            for (let activityBurst of activity) {
+                for (let activityData of activityBurst.activity) {
+                    if (activityData.event_name.includes("visiblitychange")) {
+                        let event_info = activityData.event_info;
+
+                        if (event_info.userAction.includes("Entered Page")) {
+                            console.log("Found access!");
+
+                            let url = event_info.page;
+
+                            if (url in pageAccesses) {
+                                pageAccesses[url].numAccesses++;
+                            }
+                            else {
+                                pageAccesses[url] = {
+                                    numAccesses: 1,
+                                    numEntryPointAccesses: 0
+                                };
+                            }
+                        }
+                    }
+                }
+            }
+
+            console.log(pageAccesses);
+
+            let pages = [];
+            let numAccesses =[];
+            let numEntryPointAccesses = [];
+
+            for (const url in pageAccesses) {
+                pages.push(url);
+                numAccesses.push(pageAccesses[url].numAccesses);
+                numEntryPointAccesses.push(pageAccesses[url].numEntryPointAccesses);
+            }
+
+            let barConfig = {
+                type: 'bar',
+                title: {
+                    text: 'Page Accesses and Entry Points',
+                    fontSize: 24
+                },
+                legend: {
+                    draggable: true
+                },
+                scaleX: {
+                    label: {text: 'Page URLs'},
+                    labels: pages
+                },
+                scaleY: {
+                    step: 1
+                },
+                series: [
+                    {
+                        values: numAccesses,
+                        text: '# Accesses'
+                    },
+                    {
+                        values: numEntryPointAccesses,
+                        text: '# Entry Point Accesses'
+                    }
+                ]
+            };
+
+            zingchart.render({
+                id: 'accesses-and-entry-points',
+                data: barConfig
+            });
+
+        }
+
+        addEventListener('load', e => {
+            //  Time start and end
+            // let t_start, t_end;
+
+            //  Start last month, end now
+            // t_end = Date.now();
+            // t_start = t_end - (1000 * 60 * 60 * 24 * 30);
+
+            // renderLineChart(t_start, t_end);
+
+            //  For now, just use all of the data without worrying about time
+            //  periods.
+
+            //  1.  Query UserSessions and ActivityBurst data.
+
             let response = await fetch('https://gilkeidar.com/api/activity-bursts');
             let activity = await response.json();
             // let activity = [
@@ -98,43 +350,6 @@
             //         "session_id": "XIuyW2QrZsxghshnTjT6"
             //     }
             // ];
-
-
-            for (let activityBurst of activity) {
-                for (let activityData of activityBurst.activity) {
-                    if (activityData.event_name.includes('error')) {
-                        //  Found an error activity event!
-                        console.log("Found error!");
-                        let error_time = new Date(activityData.time_stamp);
-                        let time_diff = Date.now() - error_time;
-                        let day_diff = Math.floor(time_diff / (1000 * 60 * 60 * 24));
-                        let day_index = numDays - 1 - day_diff;
-
-                        if (errors[day_index] == null) {
-                            errors[day_index] = 1;
-                        } else {
-                            errors[day_index]++;
-                        }
-                    }
-                }
-            }
-
-            //  2.  Fill visitors series (Number of visitors per day)
-            //      1.  Create an array of length numDays of sets of userIDs
-            //          (each index starting as an empty set) (call this 
-            //          uniqueVisitors).
-            //      1.  Send a GET request to /api/user-sessions to get a JSON
-            //          array of all UserSessions and store it in sessionArray.
-            //      2.  For each session:
-            //          1.  Determine the day it occurred.
-            //          2.  sessions[day]++.
-            //          3.  If user ID of the session doesn't exist in 
-            //              uniqueVisitors, add it.
-            //      3.  For i = 0 to numDays - 1:
-            //          1.  visitors[i] = uniqueVisitors[i].size();
-            let uniqueVisitors = Array(numDays).fill(null);
-
-            console.log(uniqueVisitors);
 
             response = await fetch("https://gilkeidar.com/api/user-sessions");
             let sessionArray = await response.json();
@@ -190,82 +405,11 @@
             //     }
             // ];
 
-            for (let session of sessionArray) {
-                let session_time = session.performance_data["page-load-end"];
-                let time_diff = Date.now() - session_time;
-                let day_diff = Math.floor(time_diff / (1000 * 60 * 60 * 24));
-                let day_index = numDays - 1 - day_diff;
 
-                if (sessions[day_index] == null) {
-                    sessions[day_index] = 1;
-                }
-                else {
-                    sessions[day_index]++;
-                }
+            //  Render today's data (going back at most 30 days)
+            renderLineChart(activity, sessionArray);
 
-                if (uniqueVisitors[day_index] == null) {
-                    uniqueVisitors[day_index] = new Set();
-                }
-                uniqueVisitors[day_index].add(session.user_id);
-            }
-
-            for (let i = 0; i < numDays; i++) {
-                if (uniqueVisitors[i] != null) {
-                    visitors[i] = uniqueVisitors[i].size;
-                }
-            }
-
-            //  3.  Fill sessions series
-
-            //  4.  Render line chart
-            let lineConfig = {
-                type: 'line',
-                title: {
-                    text: 'Sessions, Visitors, and Errors',
-                    fontSize: 24
-                },
-                legend: {
-                    draggable: true
-                },
-                scaleX: {
-                    label: {text: 'Days'},
-                    labels: scaleText
-                },
-                series: [
-                    {
-                        values: errors,
-                        text: '# Errors'
-                    },
-                    {
-                        values: visitors,
-                        text: '# Visitors'
-                    },
-                    {
-                        values: sessions,
-                        text: '# Sessions (Visits)'
-                    }
-                ]
-            };
-
-            zingchart.render({
-                id: 'sessions-visitors-and-errors',
-                data: lineConfig
-            });
-        }
-
-        addEventListener('load', e => {
-            //  Time start and end
-            // let t_start, t_end;
-
-            //  Start last month, end now
-            // t_end = Date.now();
-            // t_start = t_end - (1000 * 60 * 60 * 24 * 30);
-
-            // renderLineChart(t_start, t_end);
-
-            //  For now, just use all of the data without worrying about time
-            //  periods.
-            renderLineChart();
+            renderBarChart(activity, sessionArray);
         });
 
         // addEventListener('load', e => {

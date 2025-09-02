@@ -115,6 +115,10 @@ class StaticData {
         //  9.  Get the user's network connection type
         this["user-network-connection-type"] =
             window.navigator.connection.effectiveType;
+
+        //  10. NEW PROPERTY - get user's entry point into the session (i.e.,
+        //      the current URL)
+        this["entry-point"] = document.URL;
     }
 }
 
