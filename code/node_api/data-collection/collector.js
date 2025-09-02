@@ -31,9 +31,9 @@ const ID_ALPHABET_SIZE = NUM_LETTERS * 2 + NUM_DIGITS;
 
 /**
  * Activity collection period interval (in ms)
- * (10 sec * (1000 ms / sec))
+ * (5 sec * (1000 ms / sec))
  */
-const ACTIVITY_COLLECTION_PERIOD = 10 * 1000;
+const ACTIVITY_COLLECTION_PERIOD = 5 * 1000;
 
 /**
  * Minimum time the user has to be idle in order for the "idlestart" event to
@@ -192,7 +192,7 @@ class ActivityBurst {
      * Maximum length of an ActivityBurst's ActivityData array. (Maximum number
      * of events that can be collected in a single ACTIVITY_COLLECTION_PERIOD).
      */
-    static MAX_ACTIVITY_BURST_SIZE = 10000;
+    static MAX_ACTIVITY_BURST_SIZE = 1000;
 
      /**
       * ActivityBurst constructor.
