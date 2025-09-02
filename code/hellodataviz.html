@@ -97,7 +97,7 @@
             //         ],
             //         "session_id": "XIuyW2QrZsxghshnTjT6"
             //     }
-            // ]
+            // ];
 
 
             for (let activityBurst of activity) {
@@ -132,10 +132,63 @@
             //              uniqueVisitors, add it.
             //      3.  For i = 0 to numDays - 1:
             //          1.  visitors[i] = uniqueVisitors[i].size();
-            let uniqueVisitors = Array(numDays).fill(new Set());
+            let uniqueVisitors = Array(numDays).fill(null);
+
+            console.log(uniqueVisitors);
 
             response = await fetch("https://gilkeidar.com/api/user-sessions");
             let sessionArray = await response.json();
+            // let sessionArray = [
+            //     {
+            //         "_id": "XIuyW2QrZsxghshnTjT6",
+            //         "static_data": {
+            //         "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36",
+            //         "user-language": "en-US",
+            //         "user-accepts-cookies": true,
+            //         "user-allows-javascript": true,
+            //         "user-allows-images": true,
+            //         "user-allows-css": true,
+            //         "user-screen-dimensions": {
+            //             "width": 1646,
+            //             "height": 926
+            //         },
+            //         "user-window-dimensions": {
+            //             "width": 1646,
+            //             "height": 757
+            //         },
+            //         "user-network-connection-type": "4g"
+            //         },
+            //         "performance_data": {
+            //         "timing-object": {
+            //             "connectStart": 1756751015680,
+            //             "secureConnectionStart": 1756751015709,
+            //             "unloadEventEnd": 0,
+            //             "domainLookupStart": 1756751015680,
+            //             "domainLookupEnd": 1756751015680,
+            //             "responseStart": 1756751015789,
+            //             "connectEnd": 1756751015748,
+            //             "responseEnd": 1756751015791,
+            //             "requestStart": 1756751015748,
+            //             "domLoading": 1756751015798,
+            //             "redirectStart": 0,
+            //             "loadEventEnd": 1756751016143,
+            //             "domComplete": 1756751016143,
+            //             "navigationStart": 1756751015654,
+            //             "loadEventStart": 1756751016143,
+            //             "domContentLoadedEventEnd": 1756751015859,
+            //             "unloadEventStart": 0,
+            //             "redirectEnd": 0,
+            //             "domInteractive": 1756751015859,
+            //             "fetchStart": 1756751015666,
+            //             "domContentLoadedEventStart": 1756751015859
+            //         },
+            //         "page-load-start": 1756751016143,
+            //         "page-load-end": 1756751016143,
+            //         "page-load-time": 0
+            //         },
+            //         "user_id": "kGlTlrWaqTDypr1jrt99"
+            //     }
+            // ];
 
             for (let session of sessionArray) {
                 let session_time = session.performance_data["page-load-end"];
@@ -150,11 +203,16 @@
                     sessions[day_index]++;
                 }
 
+                if (uniqueVisitors[day_index] == null) {
+                    uniqueVisitors[day_index] = new Set();
+                }
                 uniqueVisitors[day_index].add(session.user_id);
             }
 
             for (let i = 0; i < numDays; i++) {
-                visitors[i] = uniqueVisitors[i].size;
+                if (uniqueVisitors[i] != null) {
+                    visitors[i] = uniqueVisitors[i].size;
+                }
             }
 
             //  3.  Fill sessions series
@@ -165,6 +223,9 @@
                 title: {
                     text: 'Sessions, Visitors, and Errors',
                     fontSize: 24
+                },
+                legend: {
+                    draggable: true
                 },
                 scaleX: {
                     label: {text: 'Days'},
