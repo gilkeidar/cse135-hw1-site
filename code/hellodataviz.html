@@ -251,7 +251,14 @@
                         if (event_info.userAction.includes("Entered Page")) {
                             console.log("Found access!");
 
-                            let url = event_info.page;
+                            let url;
+                            if ("page" in event_info) {
+                                url = event_info.page;
+                            }
+                            else {
+                                url = activityData.page;
+                            }
+                            // let url = event_info.page;
 
                             console.log(`Access for ${url}.`);
 

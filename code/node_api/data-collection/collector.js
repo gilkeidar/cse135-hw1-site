@@ -179,7 +179,7 @@ class ActivityData {
         this.event_name = event_name;
         this.time_stamp = time_stamp;
         this.event_info = event_info;
-        this.page_url = document.URL;
+        this.page = document.URL;
     }
 }
 
@@ -543,8 +543,7 @@ class ActivityEventLogger {
     static getVisibilityChangeEventInfo(e) {
         let userEnteredPage = document.visibilityState == "visible";
         return {
-            userAction: userEnteredPage ? "Entered Page" : "Exited Page",
-            page: document.URL
+            userAction: userEnteredPage ? "Entered Page" : "Exited Page"
         };
     }
 
