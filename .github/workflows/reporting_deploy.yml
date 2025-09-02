@@ -18,7 +18,7 @@ jobs:
       - name: Execute script using SSH
         uses: appleboy/ssh-action@v1
         with:
-          host: https://reporting.gilkeidar.com
+          host: reporting.gilkeidar.com
           username: ${{ secrets.USERNAME }}
           password: ${{ secrets.PASSWORD }}
           port: ${{ secrets.PORT }}
