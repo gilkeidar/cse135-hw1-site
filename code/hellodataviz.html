@@ -66,9 +66,9 @@
 
             let scaleText = generateTimeScaleText(numDays);
 
-            let errors = Array(numDays).fill(null);
-            let visitors = Array(numDays).fill(null);
-            let sessions = Array(numDays).fill(null);
+            let errors = Array(numDays).fill(0);
+            let visitors = Array(numDays).fill(0);
+            let sessions = Array(numDays).fill(0);
 
             //  1.  Fill errors series
             //      1.  Send a GET request to /api/activity-bursts to get a JSON
@@ -242,7 +242,7 @@
 
             for (let activityBurst of activity) {
                 for (let activityData of activityBurst.activity) {
-                    if (activityData.event_name.includes("visiblitychange")) {
+                    if (activityData.event_name.includes("visibilitychange")) {
                         let event_info = activityData.event_info;
 
                         if (event_info.userAction.includes("Entered Page")) {
