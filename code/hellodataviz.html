@@ -119,7 +119,43 @@
                 }
             }
 
-            //  2.  Fill visitors series
+            //  2.  Fill visitors series (Number of visitors per day)
+            //      1.  Create an array of length numDays of sets of userIDs
+            //          (each index starting as an empty set) (call this 
+            //          uniqueVisitors).
+            //      1.  Send a GET request to /api/user-sessions to get a JSON
+            //          array of all UserSessions and store it in sessionArray.
+            //      2.  For each session:
+            //          1.  Determine the day it occurred.
+            //          2.  sessions[day]++.
+            //          3.  If user ID of the session doesn't exist in 
+            //              uniqueVisitors, add it.
+            //      3.  For i = 0 to numDays - 1:
+            //          1.  visitors[i] = uniqueVisitors[i].size();
+            let uniqueVisitors = Array(numDays).fill(new Set());
+
+            response = await fetch("https://gilkeidar.com/api/user-sessions");
+            let sessionArray = await response.json();
+
+            for (let session of sessionArray) {
+                let session_time = session.performance_data["page-load-end"];
+                let time_diff = Date.now() - session_time;
+                let day_diff = Math.floor(time_diff / (1000 * 60 * 60 * 24));
+                let day_index = numDays - 1 - day_diff;
+
+                if (sessions[day_index] == null) {
+                    sessions[day_index] = 1;
+                }
+                else {
+                    sessions[day_index]++;
+                }
+
+                uniqueVisitors[day_index].add(session.user_id);
+            }
+
+            for (let i = 0; i < numDays; i++) {
+                visitors[i] = uniqueVisitors[i].size;
+            }
 
             //  3.  Fill sessions series
 
