@@ -203,6 +203,8 @@ class ActivityBurst {
         this.burst_start = 0;
         this.burst_end = 0;
         this.activity = [];
+
+        this.loggedFullError = false;
     }
 
     /**
@@ -234,8 +236,16 @@ class ActivityBurst {
             this.burst_end = activityData.time_stamp;
         }
         else {
-            console.error("ActivityBurst is full! Can't push more ActivityData"
-                + " objects to it.");
+            //  Note: If this occurs, then *this* console.error() call will
+            //  dispatch an event which will eventually lead to
+            //  addActivityData() to be called again (creating an infinite event
+            //  loop that will only be broken when the ActivityBurst is
+            //  successfully sent to the server).
+            if (!this.loggedFullError) {
+                this.loggedFullError = true;
+                console.error("ActivityBurst is full! Can't push more ActivityData"
+                    + " objects to it.");
+            }
         }
     }
 }
@@ -632,6 +642,8 @@ class ActivityEventLogger {
                 JSON.stringify(this.activity_burst));
             
             //  2.  Reset activity_burst in memory.
+            //      (This also resets the ActivityBurst's loggedFullError bool
+            //      to false)
             this.activity_burst = new ActivityBurst();
         }
     }
@@ -734,7 +746,7 @@ async function sendActivityBurstObject(activity_event_logger) {
             console.log("Sending ActivityBurst object succeeded, clearing it"
                 + " from localStorage.");
             
-                localStorage.removeItem(ls_ACTIVITY_BURST);
+            localStorage.removeItem(ls_ACTIVITY_BURST);
         }
         else {
             console.error(`Sending ActivityBurst object failed: received`
