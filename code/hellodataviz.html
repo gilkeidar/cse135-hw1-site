@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hello Data Visualization</title>
+    <script src="https://cdn.zingchart.com/zingchart.min.js"></script>
+</head>
+<body>
+    <div id="sessions-visitors-and-errors"></div>
+    <!-- <div id="chartizard"></div> -->
+    <!-- <div id="chartmeleon"></div> -->
+    <script>
+        // function renderLineChart(t_start, t_end) {
+        async function renderLineChart() {
+            console.log("renderLineChart()");
+            //  Line chart specification
+            //  x-axis: Time, discrete (units in days)
+            //  y-axis: # of occurrences (per day)
+            //  Three series:
+            //      1.  # of errors / day (red)
+            //      2.  # of unique visitors / day (green)
+            //      3.  # of sessions / day (blue)
+
+            //  1.  # of errors / day
+            //  This can be tracked by reading in ActivityData (from t_start to
+            //      t_end)
+            
+            //  1.  # of errors / day
+            //  1.  Create an array of length 30 representing one month.
+            //      (where index 0 is 29 days ago and index 29 is today).
+            //  2.  Send a GET request to /api/activity-bursts to get a JSON
+            //      array of all ActivityBursts; store the array in the variable
+            //      activity.
+            //  3.  Iterate through every ActivityBurst and through every
+            //      ActivityData object; if the activity event type is an error,
+            //      then:
+            //      1.  Determine the day of when the error happened from its
+            //          timestamp, converting it into an index in the array.
+            //      2.  Increment the value in the array.
+            //  4.  The array now represents the series 1 data.
+
+            //  1.  Create three arrays of length 30 representing one month,
+            //      each of which containing the series 1, 2, and 3 data
+            //      respectively.
+
+            //  Data is for 30 days (29 days ago to today)
+            let numDays = 30;
+
+            let errors = Array(numDays).fill(null);
+            let visitors = Array(numDats).fill(null);
+            let sessions = Array(numDays).fill(null);
+
+            //  1.  Fill errors series
+            //      1.  Send a GET request to /api/activity-bursts to get a JSON
+            //          array of all ActivityBursts in the database, and store
+            //          the array in the variable activity.
+            //      2.  For every ActivityBurst burst in activity:
+            //          1.  For every ActivityData activityData in burst:
+            //              1.  If activityData represents an error:
+            //                  1.  Determine the day when activityData happened
+            //                      (as an index in the errors array).
+            //                  2.  Increment errors[index] (or set it to 1 if
+            //                      it is null).
+            let response = await fetch('/api/activity-bursts');
+            let activity = await response.json();
+
+            for (let activityBurst of activity) {
+                for (let activityData of activityBurst.activity) {
+                    if (activityData.event_name.includes('error')) {
+                        //  Found an error activity event!
+                        let error_time = new Date(activityData.time_stamp);
+                        let time_diff = Date.now() - error_time;
+                        let day_diff = Math.floor(time_diff / (1000 * 60 * 60 * 24));
+                        let day_index = numDays - 1 - day_diff;
+
+                        if (errors[day_index] == null) {
+                            errors[day_index] = 1;
+                        } else {
+                            errors[day_index]++;
+                        }
+                    }
+                }
+            }
+
+            //  2.  Fill visitors series
+
+            //  3.  Fill sessions series
+
+            //  4.  Render line chart
+            let lineConfig = {
+                type: 'line',
+                title: {
+                    text: 'Sessions, Visitors, and Errors',
+                    fontSize: 24
+                },
+                scaleX: {
+                    label: {text: 'Days'}
+                },
+                series: [
+                    {
+                        values: errors,
+                        text: '# Errors'
+                    },
+                    {
+                        values: visitors,
+                        text: '# Visitors'
+                    },
+                    {
+                        values: sessions,
+                        text: '# Sessions (Visits)'
+                    }
+                ]
+            };
+
+            zingchart.render({
+                id: 'sessions-visitors-and-errors',
+                data: lineConfig
+            });
+        }
+
+        addEventListener('load', e => {
+            //  Time start and end
+            // let t_start, t_end;
+
+            //  Start last month, end now
+            // t_end = Date.now();
+            // t_start = t_end - (1000 * 60 * 60 * 24 * 30);
+
+            // renderLineChart(t_start, t_end);
+
+            //  For now, just use all of the data without worrying about time
+            //  periods.
+            renderLineChart();
+        });
+
+        // addEventListener('load', e => {
+        //     let config1 = {
+        //         type: 'bar',
+        //         title: {
+        //             text: 'Data Basics',
+        //             fontSize: 24
+        //         },
+        //         legend: {
+        //             draggable: true
+        //         },
+        //         scaleX: {
+        //             //  Set scale label
+        //             label: { text: 'Days'},
+        //             //  Convert text on scale indices
+        //             labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+        //         },
+        //         scaleY: {
+        //             //  Scale label with unicode character
+        //             label: { text: 'Temperature (°F)'},
+        //         },
+        //         plot: {
+        //             //  Animation
+        //             animation: {
+        //                 effect: 'ANIMATION_EXPAND_BOTTOM',
+        //                 method: 'ANIMATION_STRONG_EASE_OUT',
+        //                 sequence: 'ANIMATION_BY_NODE',
+        //                 speed: 275
+        //             }
+        //         },
+        //         series: [
+        //             {
+        //                 //  plot 1 values, linear data
+        //                 values: [23, 20, 27, 29, 25, 17, 15],
+        //                 text: 'Week 1'
+        //             },
+        //             {
+        //                 //  plot 2 values, linear data
+        //                 values: [35, 42, 33, 49, 35, 47, 35],
+        //                 text: 'Week 2'
+        //             },
+        //             {
+        //                 //  plot 3 values, linear data
+        //                 values: [15, 22, 13, 33, 44, 27, 31],
+        //                 text: "Week 3"
+        //             }
+        //         ]
+        //     };
+
+        //     let config2 = {
+        //         type: "line",
+        //         series: [
+        //         {
+        //             values: [20, 40, 25, 50, 15, 45, 33, 34]
+        //         },
+        //         {
+        //             values: [5, 30, 21, 18, 59, 50, 28, 33]
+        //         }
+        //         ]
+        //     }
+
+        //     //  Render
+        //     zingchart.render({
+        //         id: 'chartizard',
+        //         data: config1
+        //     });
+            
+        //     zingchart.render({
+        //         id: "chartmeleon",
+        //         data: config2
+        //     })
+        // });
+    </script>
+</body>
+</html>
