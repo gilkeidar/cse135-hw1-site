@@ -9,6 +9,7 @@
 <body>
     <div id="sessions-visitors-and-errors"></div>
     <div id="accesses-and-entry-points"></div>
+    <div id="language-pie"></div>
     <!-- <div id="chartizard"></div> -->
     <!-- <div id="chartmeleon"></div> -->
     <script>
@@ -26,6 +27,56 @@
             }
 
             return scaleText;
+        }
+
+        async function renderPieChart(sessionArray) {
+            console.log("renderPieChart()");
+
+            //  Pie chart of language of user sessions
+            let numUserSessions = sessionArray.length;
+            let languages = {};
+
+            for (let session of sessionArray) {
+                let language = session.static_data['user-language'];
+
+                if (language in languages) {
+                    languages[language].numSessions++;
+                }
+                else {
+                    languages[language] = {
+                        numSessions: 1
+                    }
+                }
+            }
+
+            let series = [];
+
+            for (let language in languages) {
+                series.push({
+                    text: language,
+                    values: [languages[language].numSessions / numUserSessions]
+                });
+            }
+
+            let pieConfig = {
+                type: "pie",
+                title: {
+                    text: "Session Languages",
+                    fontSize: 24
+                },
+                plot: {
+                    fontColor: "black"
+                },
+                legend: {
+                    draggable: true
+                },
+                series: series
+            };
+
+            zingchart.render({
+                id: 'language-pie',
+                data: pieConfig
+            });
         }
 
         // function renderLineChart(t_start, t_end) {
@@ -426,6 +477,8 @@
             renderLineChart(activity, sessionArray);
 
             renderBarChart(activity, sessionArray);
+
+            renderPieChart(sessionArray);
         });
 
         // addEventListener('load', e => {
