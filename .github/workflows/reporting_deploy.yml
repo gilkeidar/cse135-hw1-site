@@ -1,0 +1,47 @@
+#  Simple workflow to deploy the reporting website to the server when a push to main
+#  occurs that changes the reporting_code/ directory contents.
+#  This deploys to the reporting.gilkeidar.com domain specifically, and overwrites the
+#  current files served for it.
+name: Deploy To Apache Server (Reporting)
+run-name: Deploying to Apache Server (Reporting) by @${{ github.actor }}
+on:
+  push:
+    branches:
+      - 'main'
+    paths:
+      - 'reporting-code/**'
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Execute script using SSH
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          password: ${{ secrets.PASSWORD }}
+          port: ${{ secrets.PORT }}
+          #  Change ownership of public_html directory to the github action user.
+          script: echo ${{ secrets.PASSWORD }} | sudo -S chown -R githubaction:githubaction ${{secrets.REPORTING_PATH}}/*
+      - name: Copy files via SSH
+        uses: appleboy/scp-action@v1
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          password: ${{ secrets.PASSWORD }}
+          port: ${{ secrets.PORT }}
+          source: "reporting_code/*"
+          target: ${{ secrets.REPORTING_PATH }}
+          #  Copy the files to the target without the reporting_code/ directory (e.g., reporting_code/index.html
+          #  will be copied to public_html/index.html instead of public_html/reporting_code/index.html
+          strip_components: 1
+      - name: Execute script using SSH
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          password: ${{ secrets.PASSWORD }}
+          port: ${{ secrets.PORT }}
+          #  Change ownership of public_html directory to user www-data
+          script: echo ${{ secrets.PASSWORD }} | sudo -S chown -R www-data:www-data ${{secrets.TARGET_PATH_DEFAULT}}/*
