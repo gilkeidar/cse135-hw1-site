@@ -47,6 +47,18 @@
             //  Data is for 30 days (29 days ago to today)
             let numDays = 30;
 
+            let scaleText = [];
+            for (let i = 0; i < numDays; i++) {
+                if (i == numDays - 1) {
+                    scaleText.push('Today');
+                } else if (i == numDays - 2) {
+                    scaleText.push('Yesterday');
+                } 
+                else {
+                    scaleText.push(`${numDays - 1 - i} ds ago`);
+                }
+            }
+
             let errors = Array(numDays).fill(null);
             let visitors = Array(numDays).fill(null);
             let sessions = Array(numDays).fill(null);
@@ -62,13 +74,37 @@
             //                      (as an index in the errors array).
             //                  2.  Increment errors[index] (or set it to 1 if
             //                      it is null).
-            let response = await fetch('/api/activity-bursts');
+            let response = await fetch('https:/gilkeidar.com/api/activity-bursts');
             let activity = await response.json();
+            // let activity = [
+            //     {
+            //         "_id": "68b5e4b39703a76669c609fc",
+            //         "burst_start": 1756751016146,
+            //         "burst_end": 1756751016146,
+            //         "activity": [
+            //             {
+            //                 "event_name": "visibilitychange",
+            //                 "time_stamp": 1756751016146,
+            //                 "event_info": {
+            //                 "userAction": "Entered Page",
+            //                 "page": "https://gilkeidar.com/"
+            //                 }
+            //             },
+            //             {
+            //                 "event_name": "error",
+            //                 "time_stamp": 1756751016146
+            //             }
+            //         ],
+            //         "session_id": "XIuyW2QrZsxghshnTjT6"
+            //     }
+            // ]
+
 
             for (let activityBurst of activity) {
                 for (let activityData of activityBurst.activity) {
                     if (activityData.event_name.includes('error')) {
                         //  Found an error activity event!
+                        console.log("Found error!");
                         let error_time = new Date(activityData.time_stamp);
                         let time_diff = Date.now() - error_time;
                         let day_diff = Math.floor(time_diff / (1000 * 60 * 60 * 24));
@@ -95,7 +131,8 @@
                     fontSize: 24
                 },
                 scaleX: {
-                    label: {text: 'Days'}
+                    label: {text: 'Days'},
+                    labels: scaleText
                 },
                 series: [
                     {
