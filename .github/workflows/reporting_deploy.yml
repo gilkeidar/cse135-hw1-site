@@ -23,7 +23,7 @@ jobs:
           password: ${{ secrets.PASSWORD }}
           port: ${{ secrets.PORT }}
           #  Change ownership of public_html directory to the github action user.
-          script: echo ${{ secrets.PASSWORD }} | sudo -S chown -R githubaction:githubaction /var/www/reporting.gilkeidar.com/public_html/*
+          script: pwd; ls -ls; echo ${{ secrets.PASSWORD }} | sudo -S chown -R githubaction:githubaction /var/www/reporting.gilkeidar.com/public_html/*
       - name: Copy files via SSH
         uses: appleboy/scp-action@v1
         with:
