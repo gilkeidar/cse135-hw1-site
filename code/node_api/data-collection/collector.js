@@ -179,6 +179,7 @@ class ActivityData {
         this.event_name = event_name;
         this.time_stamp = time_stamp;
         this.event_info = event_info;
+        this.page_url = document.URL;
     }
 }
 
