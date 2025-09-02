@@ -270,10 +270,26 @@
             let numAccesses =[];
             let numEntryPointAccesses = [];
 
+            let pageObjects = [];
+
             for (const url in pageAccesses) {
-                pages.push(url);
-                numAccesses.push(pageAccesses[url].numAccesses);
-                numEntryPointAccesses.push(pageAccesses[url].numEntryPointAccesses);
+                pageObjects.push({
+                    url: url,
+                    numAccesses: pageAccesses[url].numAccesses,
+                    numEntryPointAccesses: pageAccesses[url].numEntryPointAccesses
+                });
+                // pages.push(url);
+                // numAccesses.push(pageAccesses[url].numAccesses);
+                // numEntryPointAccesses.push(pageAccesses[url].numEntryPointAccesses);
+            }
+
+            //  Sort pageObjects by numEntryPointAccesses
+            pageObjects.sort((p1, p2) => p1.numEntryPointAccesses - p2.numEntryPointAccesses);
+
+            for (let page of pageObjects) {
+                pages.push(page.url);
+                numAccesses.push(page.numAccesses);
+                numEntryPointAccesses.push(page.numEntryPointAccesses);
             }
 
             let barConfig = {
