@@ -7,10 +7,9 @@
     <script src="https://cdn.zingchart.com/zingchart.min.js"></script>
 </head>
 <body>
-    <!-- <div id="sessions-visitors-and-errors"></div>
+    <div id="sessions-visitors-and-errors"></div>
     <div id="accesses-and-entry-points"></div>
-    <div id="language-pie"></div> -->
-    <div id="chartizard"></div>
+    <div id="language-pie"></div>
     <script>
         function generateTimeScaleText(numDays) {
             let scaleText = [];
@@ -139,7 +138,7 @@
             }
 
             //  3.  Render line chart
-            return {
+            let lineConfig = {
                 theme: 'dark',
                 type: 'line',
                 title: {
@@ -191,12 +190,12 @@
                         }
                     }
                 ]
-            };
+            }
             
-            // zingchart.render({
-            //     id: 'sessions-visitors-and-errors',
-            //     data: lineConfig
-            // });
+            zingchart.render({
+                id: 'sessions-visitors-and-errors',
+                data: lineConfig
+            });
         }
 
         async function renderBarChart(activity, sessionArray) {
@@ -307,7 +306,7 @@
                 numEntryPointAccesses.push(page.numEntryPointAccesses);
             }
 
-            return {
+            let barConfig = {
                 type: 'bar',
                 title: {
                     text: 'Page Accesses and Entry Points',
@@ -335,10 +334,10 @@
                 ]
             };
 
-            // zingchart.render({
-            //     id: 'accesses-and-entry-points',
-            //     data: barConfig
-            // });
+            zingchart.render({
+                id: 'accesses-and-entry-points',
+                data: barConfig
+            });
         }
 
         async function renderPieChart(sessionArray) {
@@ -376,7 +375,7 @@
                 });
             }
 
-            return  {
+            let pieConfig = {
                 type: "pie",
                 title: {
                     text: "Session Languages",
@@ -391,10 +390,10 @@
                 series: series
             };
 
-            // zingchart.render({
-            //     id: 'language-pie',
-            //     data: pieConfig
-            // });
+            zingchart.render({
+                id: 'language-pie',
+                data: pieConfig
+            });
         }
 
         addEventListener('load', async (e) => {
@@ -422,18 +421,9 @@
             let activity = await response.json();
 
             //  2.  Render the queried data in the specified charts
-            let lineConfig = await renderLineChart(activity, sessionArray);
-            let barConfig = await renderBarChart(activity, sessionArray);
-            let pieConfig = await renderPieChart(sessionArray);
-
-            zingchart.render({
-                data: {
-                    graphset: [
-                        lineConfig, barConfig, pieConfig
-                    ],
-                },
-                id: "chartizard"
-            });
+            renderLineChart(activity, sessionArray);
+            renderBarChart(activity, sessionArray);
+            renderPieChart(sessionArray);
         })
 
     </script>
