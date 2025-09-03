@@ -1,18 +1,179 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>CSE 135 HW Lives!</title>
-</head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CSE 135 HW Lives!</title>
+    <style>
+        * {
+            padding: 0;
+            margin: 0;
+            font-family: 'Times New Roman', Times, serif;
+            box-sizing: border-box;
+            font-size: 1rem;
+        }
 
+        /*  CSS Variable definitions */
+        :root {
+            /* Colors */
+            --code-color: #cccccc;
+            --code-bg-color: #1f1f1f;
+            --section-bg-color: beige;
+            --subsection-bg-color: lightblue;
+
+            /* Font sizes */
+            --h1-font-size: 3rem;
+            --h2-font-size: 2rem;
+            --h3-font-size: 1.5rem;
+            --p-font-size: 1.2rem;
+        }
+
+        h1 {
+            font-size: var(--h1-font-size);
+            font-family: sans-serif;
+        }
+        h2 {
+            font-size: var(--h2-font-size);
+        }
+        h3 {
+            font-size: var(--h3-font-size);
+        }
+
+        p {
+            margin: 0 1dvw;
+            font-size: var(--p-font-size);
+            max-width: 100ch;
+        }
+
+        body {
+            display: flex;
+            flex-direction: column;
+            gap: 1dvh;
+            padding: 1dvh 1dvw;
+            min-height: 100dvh;
+        }
+
+        header {
+            padding: 3dvh 3dvw;
+            background: var(--section-bg-color);
+            text-align: center;
+        }
+
+        main {
+            flex: 1;
+            background: var(--section-bg-color);
+            padding: 1dvh 1dvw;
+            display: flex;
+            flex-direction: column;
+            gap: 1dvh;
+        }
+
+        main > section {
+            flex: 1;
+            background: lightyellow;
+            padding: 1dvh 1dvw;
+        }
+    </style>
+    <script src="https://cdn.zingchart.com/zingchart.min.js"></script>
+</head>
 <body>
-  <h1>CSE 135 HW1 Lives!</h1>
-  <h2>reporting.gilkeidar.com</h2>
-  <script>
-    document.write(`Live @ ${new Date()}`);
-  </script>
-  <p>Test 4</p>
+    <header>
+        <h1>Analytics Dashboard</h1>
+    </header>
+    <main>
+        <section>
+            <h2>Most Clicked Page Elements</h2>
+        </section>
+        <section>
+            <h2>Metric 2</h2>
+        </section>
+        <section>
+            <h2>Metric 3</h2>
+        </section>
+    </main>
+    <script>
+        function isClickEvent(event_name) {
+            const click_event_names = ["click", "contextmenu", "dblclick", 
+                "mousedown"];
+
+            for (let click_event of click_event_names) {
+                if (click_event == event_name)
+                    return true;
+            }
+
+            return false;
+        }
+
+        function renderClickedPageElements(activity) {
+            console.log("renderClickedPageElements");
+            
+            //  Question: For each page p: What elements in p are being clicked
+            //      on, and how often?
+            //  To answer this question, it will likely make sense to have a bar
+            //  chart per page.
+            //  Each bar chart will then have the following structure:
+            //      x-axis: page elements that have been clicked on at least
+            //          once
+            //      y-axis: for each page element, the number of times the page
+            //          element was clicked on.
+            //      The x-axis should be sorted so that the corresponding y-axis
+            //      values are non-increasing from left to right (i.e., the most
+            //      clicked elements should be on the left)
+            //  This means that the bar graphs should be represented together in
+            //  a graph set.
+            
+            //  1.  Create an object with keys being URLs and values being
+            //      objects with element fields (stringified JSON of click event
+            //      targets) whose values are click frequency.
+            let pages = {};
+            for (let activityBurst of activity) {
+                for (let activityData of activityBurst.activity) {
+                    if (isClickEvent(activityData.event_name)) {
+                        //  1.  Check whether the page URL is a property of the
+                        //      pages object.
+                        let url = activityData.page;
+                        let clickTarget = activityData.event_info.target;
+                        let targetString = JSON.stringify(clickTarget);
+
+                        if (url in pages) {
+                            //  1.  Check whether the target is a property of
+                            //      the target string.
+                            if (targetString in pages[url]) {
+                                pages[url][targetString]++;
+                            }
+                            else {
+                                pages[url][targetString] = 1;
+                            }
+                        }
+                        else {
+                            //  url not in pages object.
+                            //  Set it to an object with the target frequency
+                            //  being 1.
+                            pages[url] = {
+                                [targetString]: 1
+                            };
+                        }
+                    }
+                }
+            }
+
+            console.log(pages);
+
+            //  2.  
+        }
+
+        addEventListener('load', async (e) => {
+            //  1.  Query UserSessions and ActivityBurst data from the REST API
+            //      endpoint.
+            let response = await fetch('https://gilkeidar.com/api/user-sessions');
+            let sessions = await response.json();
+            
+            response = await fetch('https://gilkeidar.com/api/activity-bursts');
+            let activity = await response.json();
+
+            //  2.  Render each metric's charts
+            renderClickedPageElements(activity);
+        });
+    </script>
 </body>
 </html>
