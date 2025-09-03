@@ -144,12 +144,14 @@
             let clickedElementNames = [];
             let clickedElementFreqs = [];
 
+            let totalClickFreq = 0;
             for (let element of clickedElements) {
                 clickedElementNames.push(element.name);
                 clickedElementFreqs.push(element.freq);
+                totalClickFreq += element.freq;
             }
 
-            return {
+            let config = {
                 type: 'bar',
                 title: {
                     text: page
@@ -170,6 +172,11 @@
                         }
                     }
                 ]
+            };
+
+            return {
+                config: config,
+                totalFreq: totalClickFreq
             };
         }
 
@@ -235,11 +242,19 @@
             console.log(pages);
 
             //  2.  For each page, create a bar chart.
-            let graphset = [];
+            let pageResults = [];
             for (let page in pages) {
                 console.log(`Creating click bar chart for page ${page}`);
 
-                graphset.push(createClickBarChart(page, pages));
+                pageResults.push(createClickBarChart(page, pages));
+            }
+
+            //  3.  Sort page results by click frequency
+            pageResults.sort((p1, p2) => p2.totalFreq - p1.totalFreq);
+
+            let graphset = [];
+            for (let pageResult of pageResults) {
+                graphset.push(pageResults.config);
             }
 
             let graphsetConfig = {
