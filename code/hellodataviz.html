@@ -37,6 +37,11 @@
             return numDays - 1 - day_diff;
         }
 
+        function removeIndexHTML(url_path) {
+            let index = url_path.index("index.html");
+            return url_path.substring(0, index);
+        }
+
         function renderLineChart(activity, sessionArray) {
             console.log("renderLineChart()");
 
@@ -223,7 +228,7 @@
             let pageAccesses = {};
 
             for (let session of sessionArray) {
-                let url = session.static_data['entry-point'];
+                let url = removeIndexHTML(session.static_data['entry-point']);
 
                 if (url in pageAccesses) {
                     pageAccesses[url].numEntryPointAccesses++;
