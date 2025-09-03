@@ -259,7 +259,7 @@
                         if (event_info.userAction.includes("Entered Page")) {
                             console.log("Found access!");
 
-                            let url = activityData.page;
+                            let url = removeIndexHTML(activityData.page);
 
                             console.log(`Access for ${url}.`);
 
