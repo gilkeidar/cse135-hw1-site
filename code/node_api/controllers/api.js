@@ -150,6 +150,7 @@ app.get('/user-sessions', async (req, res) => {
 	//	2.	Set headers
 	res.status(200);
 	res.set('Content-Type', 'application/json');
+	res.set('Access-Control-Allow-Origin', "https://reporting.gilkeidar.com");
 
 	//	3.	Get entire user-sessions table from database
 	let user_sessions = await model.getAll("user-sessions");
@@ -168,6 +169,8 @@ app.get('/user-sessions/:id', async (req, res) => {
 
 	console.log(`Queried user-sessions object with id ${req.params.id}:`);
 	console.log(userSessionData);
+
+	res.set('Access-Control-Allow-Origin', "https://reporting.gilkeidar.com");
 
 	if (!userSessionData) {
 		//	No documents (UserSessions) matched - send empty payload
@@ -281,6 +284,8 @@ app.get('/activity-bursts', async (req, res) => {
 	//		database.
 	let activity_bursts = await model.getAll("activity-bursts");
 
+	res.set('Access-Control-Allow-Origin', "https://reporting.gilkeidar.com");
+
 	res.status(200).set("Content-Type", "application/json")
 		.send(activity_bursts);
 });
@@ -301,6 +306,8 @@ app.get('/activity-bursts/:id', async (req, res) => {
 
 	console.log(`Queried activity-bursts object with id ${req.params.id}:`);
 	console.log(activityBurst);
+
+	res.set('Access-Control-Allow-Origin', "https://reporting.gilkeidar.com");
 
 	if (!activityBurst) {
 		//	No documents (ActivityBursts) matched - send empty payload
