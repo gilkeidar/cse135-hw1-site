@@ -37,7 +37,7 @@
             return numDays - 1 - day_diff;
         }
 
-        async function renderLineChart(activity, sessionArray) {
+        function renderLineChart(activity, sessionArray) {
             console.log("renderLineChart()");
 
             //  Line chart specification
@@ -198,7 +198,7 @@
             });
         }
 
-        async function renderBarChart(activity, sessionArray) {
+        function renderBarChart(activity, sessionArray) {
             console.log('renderBarChart()');
 
             //  Bar chart specification
@@ -340,7 +340,7 @@
             });
         }
 
-        async function renderPieChart(sessionArray) {
+        function renderPieChart(sessionArray) {
             console.log('renderPieChart()');
 
             //  Pie chart specification
