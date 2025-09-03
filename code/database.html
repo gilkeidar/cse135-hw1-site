@@ -25,6 +25,7 @@
         <zg-caption>User Activity (in bursts of 10 seconds)</zg-caption>
         <zg-colgroup>
             <zg-column type="text" index="Session Id"></zg-column>
+            <zg-column type="text" index="Page"></zg-column>
             <zg-column type="text" index="Event"></zg-column>
             <zg-column type="number" index="Timestamp"></zg-column>
             <zg-column type="element" type-element-tag-name="pre" index="Event Information"></zg-column>
@@ -43,6 +44,7 @@
             for (let activityData of activity_burst.activity) {
                 gridData.push({
                     "Session Id": activity_burst.session_id,
+                    "Page": activityData.page,
                     "Event": activityData.event_name,
                     "Timestamp": activityData.time_stamp,
                     "Event Information": JSON.stringify(activityData.event_info, null, 2)
