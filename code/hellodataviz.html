@@ -39,6 +39,9 @@
 
         function removeIndexHTML(url_path) {
             let index = url_path.indexOf("index.html");
+            if (index < 0) {
+                return url_path;
+            }
             return url_path.substring(0, index);
         }
 

@@ -107,11 +107,14 @@
         function removeIndexHTML(url_path) {
             console.log(`removeIndexHTML(${url_path})`);
             let index = url_path.indexOf("index.html");
+            if (index < 0) {
+                return url_path;
+            }
             return url_path.substring(0, index);
         }
 
         function renderClickedPageElements(activity) {
-            console.log("renderClickedPageElements");
+            console.log("renderClickedPageElements()");
             
             //  Question: For each page p: What elements in p are being clicked
             //      on, and how often?
