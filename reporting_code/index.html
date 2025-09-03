@@ -105,6 +105,7 @@
         }
 
         function removeIndexHTML(url_path) {
+            console.log(`removeIndexHTML(${url_path})`);
             let index = url_path.indexOf("index.html");
             return url_path.substring(0, index);
         }
