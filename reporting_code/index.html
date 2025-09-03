@@ -83,6 +83,7 @@
     <main>
         <section>
             <h2>Most Clicked Page Elements</h2>
+            <div id="click-graphset"></div>
         </section>
         <section>
             <h2>Metric 2</h2>
@@ -111,6 +112,16 @@
                 return url_path;
             }
             return url_path.substring(0, index);
+        }
+
+        function createClickBarChart(page, pages) {
+            console.log(page);
+
+            return {
+                title: {
+                    text: page
+                }
+            };
         }
 
         function renderClickedPageElements(activity) {
@@ -173,7 +184,22 @@
 
             console.log(pages);
 
-            //  2.  
+            //  2.  For each page, create a bar chart.
+            let graphset = [];
+            for (let page in pages) {
+                console.log(`Creating click bar chart for page ${page}`);
+
+                graphset.push(createClickBarChart(page, pages));
+            }
+
+            let graphsetConfig = {
+                graphset: graphset
+            };
+
+            zingchart.render({
+                id: "click-graphset",
+                data: graphsetConfig
+            });
         }
 
         addEventListener('load', async (e) => {
