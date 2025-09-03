@@ -104,6 +104,11 @@
             return false;
         }
 
+        function removeIndexHTML(url_path) {
+            let index = url_path.index("index.html");
+            return url_path.substring(0, index);
+        }
+
         function renderClickedPageElements(activity) {
             console.log("renderClickedPageElements");
             
@@ -122,34 +127,37 @@
             //  This means that the bar graphs should be represented together in
             //  a graph set.
             
-            //  1.  Create an object with keys being URLs and values being
+            //  1.  Create an object with keys being URL paths and values being
             //      objects with element fields (stringified JSON of click event
             //      targets) whose values are click frequency.
             let pages = {};
             for (let activityBurst of activity) {
                 for (let activityData of activityBurst.activity) {
                     if (isClickEvent(activityData.event_name)) {
-                        //  1.  Check whether the page URL is a property of the
-                        //      pages object.
-                        let url = activityData.page;
+                        //  1.  Check whether the page URLpath  is a property of
+                        //      the pages object.
+                        //  Avoid incorrect separation of click event frequency
+                        //  counts by differences between / and /index.html
+                        let path = removeIndexHTML(activityData.page);
+
                         let clickTarget = activityData.event_info.target;
                         let targetString = JSON.stringify(clickTarget);
 
-                        if (url in pages) {
+                        if (path in pages) {
                             //  1.  Check whether the target is a property of
                             //      the target string.
-                            if (targetString in pages[url]) {
-                                pages[url][targetString]++;
+                            if (targetString in pages[path]) {
+                                pages[path][targetString]++;
                             }
                             else {
-                                pages[url][targetString] = 1;
+                                pages[path][targetString] = 1;
                             }
                         }
                         else {
-                            //  url not in pages object.
+                            //  path not in pages object.
                             //  Set it to an object with the target frequency
                             //  being 1.
-                            pages[url] = {
+                            pages[path] = {
                                 [targetString]: 1
                             };
                         }
