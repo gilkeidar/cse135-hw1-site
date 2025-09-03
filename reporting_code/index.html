@@ -205,6 +205,7 @@
                         let path = removeIndexHTML(activityData.page);
 
                         console.log(`Click event in path ${path}`);
+                        console.log(activityData);
 
                         let clickTarget = activityData.event_info.target;
                         let targetString = getClickElementName(clickTarget);
