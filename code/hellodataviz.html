@@ -312,11 +312,11 @@
                     text: 'Page Accesses and Entry Points',
                     fontSize: 24
                 },
-                plot: {
-                    tooltip: {
-                        text: "%kt accessed %vt times."
-                    }
-                },
+                // plot: {
+                //     tooltip: {
+                //         text: "%kt accessed %vt times."
+                //     }
+                // },
                 legend: {
                     draggable: true
                 },
@@ -330,11 +330,17 @@
                 series: [
                     {
                         values: numAccesses,
-                        text: '# Accesses'
+                        text: '# Accesses',
+                        tooltip: {
+                            text: "%kt accessed %vt times."
+                        }
                     },
                     {
                         values: numEntryPointAccesses,
-                        text: '# Entry Point Accesses'
+                        text: '# Entry Point Accesses',
+                        tooltip: {
+                            text: "%kt accessed as entry point %vt times."
+                        }
                     }
                 ]
             };
