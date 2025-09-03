@@ -128,8 +128,17 @@
             console.log(page);
             console.log(pages[page]);
 
-            //  1.  For each clicked element of page:
-            //      
+            //  1.  Convert object pages[page] object to an array.
+            let clickedElements = [];
+            for (let element in pages[page]) {
+                clickedElements.push({
+                    element: element,
+                    freq: pages[page][element]
+                });
+            }
+            console.log(clickedElements);
+            //  2.  Sort the array by frequency (non-increasing).
+            //  3.  Create corresponding scaleX array (for element names).
 
             return {
                 title: {
