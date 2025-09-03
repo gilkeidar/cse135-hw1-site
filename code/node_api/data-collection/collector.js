@@ -117,8 +117,8 @@ class StaticData {
             window.navigator.connection.effectiveType;
 
         //  10. NEW PROPERTY - get user's entry point into the session (i.e.,
-        //      the current URL)
-        this["entry-point"] = document.URL;
+        //      the current page)
+        this["entry-point"] = window.location.pathname;
     }
 }
 
