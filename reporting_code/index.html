@@ -252,6 +252,8 @@
             //  3.  Sort page results by click frequency
             pageResults.sort((p1, p2) => p2.totalFreq - p1.totalFreq);
 
+            console.log(pageResults);
+
             let graphset = [];
             for (let pageResult of pageResults) {
                 graphset.push(pageResults.config);
