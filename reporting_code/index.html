@@ -114,9 +114,22 @@
             return url_path.substring(0, index);
         }
 
+        function getClickElementName(element_target) {
+            console.log(element_target);
+
+            if (element_target.id.length > 0) {
+                return element_target.id;
+            }
+
+            return element_target.className + element_target.nodeName;
+        }
+
         function createClickBarChart(page, pages) {
             console.log(page);
             console.log(pages[page]);
+
+            //  1.  For each clicked element of page:
+            //      
 
             return {
                 title: {
@@ -159,7 +172,7 @@
                         console.log(`Click event in path ${path}`);
 
                         let clickTarget = activityData.event_info.target;
-                        let targetString = JSON.stringify(clickTarget);
+                        let targetString = getClickElementName(clickTarget);
 
                         if (path in pages) {
                             //  1.  Check whether the target is a property of
