@@ -132,18 +132,44 @@
             let clickedElements = [];
             for (let element in pages[page]) {
                 clickedElements.push({
-                    element: element,
+                    name: element,
                     freq: pages[page][element]
                 });
             }
             console.log(clickedElements);
             //  2.  Sort the array by frequency (non-increasing).
+            clickedElements.sort((e1, e2) => e2.freq - e1.freq);
             //  3.  Create corresponding scaleX array (for element names).
+            let clickedElementNames = [];
+            let clickedElementFreqs = [];
+
+            for (let element of clickedElements) {
+                clickedElementNames.push(element.name);
+                clickedElementFreqs.push(element.freq);
+            }
 
             return {
+                type: 'bar',
                 title: {
-                    text: page
-                }
+                    text: page,
+                    fontSize: 24
+                },
+                scaleX: {
+                    label: {text: "Clicked Elements"},
+                    labels: clickedElementNames
+                },
+                scaleY: {
+                    step: 1
+                },
+                series: [
+                    {
+                        values: clickedElementFreqs,
+                        text: '# element was clicked',
+                        tooltip: {
+                            text: "%kt clicked %vt times."
+                        }
+                    }
+                ]
             };
         }
 
