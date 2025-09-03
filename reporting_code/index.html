@@ -140,6 +140,8 @@
                         //  counts by differences between / and /index.html
                         let path = removeIndexHTML(activityData.page);
 
+                        console.log(`Click event in path ${path}`);
+
                         let clickTarget = activityData.event_info.target;
                         let targetString = JSON.stringify(clickTarget);
 
