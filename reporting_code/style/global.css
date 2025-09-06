@@ -72,3 +72,29 @@ main > section {
     background: lightyellow;
     padding: 1dvh 1dvw;
 }
+
+/*  Taken from the MDN code demo    */
+pre, code {
+    background-color: var(--code-bg-color);
+    /* color: #cccccc; */
+    /* color: silver; */
+    color: var(--code-color);
+    border-radius: 3px;
+    font-family: 'Courier New', Courier, monospace;
+}
+
+code {
+    padding: 0 3px;
+}
+
+pre code {
+    padding: 0;
+}
+
+pre {
+    margin: 0 1dvw;
+    padding: 1dvh 1dvw;
+    max-width: fit-content;
+    max-height: 50dvh;
+    overflow-y: auto;
+}
