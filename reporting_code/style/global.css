@@ -1,0 +1,74 @@
+* {
+    /* padding: 0; */
+    /* margin: 0; */
+    /* font-family: 'Times New Roman', Times, serif; */
+    /* box-sizing: border-box; */
+    /* font-size: 1rem; */
+}
+
+/*  CSS Variable definitions */
+:root {
+    /* Colors */
+    --code-color: #cccccc;
+    --code-bg-color: #1f1f1f;
+    --section-bg-color: beige;
+    --subsection-bg-color: lightblue;
+
+    /* Font sizes */
+    --h1-font-size: 3rem;
+    --h2-font-size: 2rem;
+    --h3-font-size: 1.5rem;
+    --p-font-size: 1.2rem;
+}
+
+h1 {
+    font-size: var(--h1-font-size);
+    font-family: sans-serif;
+}
+h2 {
+    font-size: var(--h2-font-size);
+    font-family: sans-serif;
+}
+h3 {
+    font-size: var(--h3-font-size);
+}
+
+p {
+    margin: 0 1dvw;
+    font-size: var(--p-font-size);
+    max-width: 100ch;
+}
+
+/* Ensure paragraphs don't immediately follow previous content. */
+p:nth-child(n + 2) {
+    margin-top: 1dvh;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    gap: 1dvh;
+    padding: 1dvh 1dvw;
+    min-height: 100dvh;
+}
+
+header {
+    padding: 3dvh 3dvw;
+    background: var(--section-bg-color);
+    text-align: center;
+}
+
+main {
+    flex: 1;
+    background: var(--section-bg-color);
+    padding: 1dvh 1dvw;
+    display: flex;
+    flex-direction: column;
+    gap: 1dvh;
+}
+
+main > section {
+    flex: 1;
+    background: lightyellow;
+    padding: 1dvh 1dvw;
+}
