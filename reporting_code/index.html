@@ -424,47 +424,56 @@
             //  proportion of sessions that have JS turned off.
 
             let jsAvailability = {
-                haveJS: 0,
-                noJS: 0,
-                unknown: 0
+                haveJS: {
+                    freq: 0,
+                    text: "JS Available",
+                    color: "green",
+                    caption: "JavaScript turned on."
+                },
+                noJS: {
+                    freq: 0,
+                    text: "JS Unavailable",
+                    color: "darkred",
+                    caption: "JavaScript turned off."
+                },
+                unknown: {
+                    freq: 0,
+                    text: "JS Availability Unknown",
+                    color: "lightgray",
+                    caption: "unknown JavaScript availability."
+                }
             };
 
             for (let session of sessions) {
                 if ("static_data" in session 
                     && "user-allows-javascript" in session.static_data) {
                     if (session.static_data["user-allows-javascript"]) {
-                        jsAvailability.haveJS++;
+                        jsAvailability.haveJS.freq++;
                     }
                     else {
-                        jsAvailability.noJS++;
+                        jsAvailability.noJS.freq++;
                     }
                 }
                 else {
-                    jsAvailability.unknown++;
+                    jsAvailability.unknown.freq++;
                 }
             }
 
+            let series = [];
 
-            let series = [
-                {
-                    text: "JS Available",
-                    values: [jsAvailability.haveJS / sessions.length],
-                    "background-color": "green",
-                    // tooltip: {
-                    //     text: "%vt of sessions have JS turned on."
-                    // }
-                },
-                // {
-                //     text: "JS Not Available",
-                //     values: [jsAvailability.noJS / sessions.length],
-                //     "background-color": "red"
-                // },
-                // {
-                //     text: "JS Availability Unknown",
-                //     values: [jsAvailability.unknown / sessions.length],
-                //     "background-color": "gray"
-                // }
-            ];
+            for (let property of jsAvailability) {
+                if (property.freq > 0) {
+                    series.push({
+                        text: property.text,
+                        values: [property.freq / sessions.length],
+                        "background-color": property.color,
+                        tooltip: {
+                            text: `${(property.freq / sessions.length) * 100}%
+                                of sessions have ${property.caption}`
+                        }
+                    })
+                }
+            }
 
             let pieConfig = {
                 type: "pie",
