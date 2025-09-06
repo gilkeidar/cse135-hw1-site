@@ -482,6 +482,32 @@ app.get('/errors', async (req, res) => {
 		.send(activity_bursts);
 });
 
+app.get('/click-events', async (req, res) => {
+	console.log("GET /click-events");
+
+	//	1.	Return activity-bursts that contain errors.
+	let cursor = await model.getMany("activity-bursts", {
+		$or: [
+			{'activity.event_name': "click"},
+			{'activity.event_name': "contextmenu"},
+			{'activity.event_name': "dblclick"},
+			{'activity.event_name': "mousedown"},
+		]
+	});
+
+	let activity_bursts = [];
+
+	await cursor.forEach(burst => {
+		console.log(burst);
+		activity_bursts.push(burst);
+	})
+
+	res.set('Access-Control-Allow-Origin', "https://reporting.gilkeidar.com");
+
+	res.status(200).set("Content-Type", "application/json")
+		.send(activity_bursts);
+});
+
 
 app.listen(port, () => {
 	//	Initialize model
