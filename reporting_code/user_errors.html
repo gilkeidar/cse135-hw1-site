@@ -27,6 +27,42 @@
                 been recorded client-side (using the <code>collector.js</code>
                 script).
             </p>
+            <p>
+                However, a more detailed analysis (mini-dashboard) can be done
+                using the following per page that has at least one error:
+                <ul>
+                    <li>
+                        A number showing the number of errors that occurred on
+                        that page.
+                        <ul>
+                            <li>
+                                This helps give a sense of how error-prone the
+                                page is.
+                            </li>
+                        </ul>
+                    </li>
+                    
+                    <li>
+                        A pie chart showing the breakdown of error events by
+                        event type.
+                    </li>
+                    <li>
+                        A grid that contains a listing of the error events that
+                        occurred on that page.
+                        <ul>
+                            <li>
+                                This allows for a deeper dive into the errors
+                                that have occurred on that page (this is
+                                essentially allowing for raw data consumption
+                                and so is added last since it's only relevant
+                                if the developer / administrator wants to
+                                critically analyze the errors that have occurred
+                                on this particular page)
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </p>
         </section>
     </main>
     <script>
