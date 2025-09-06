@@ -165,7 +165,7 @@
             for (let error of page.errors) {
                 let errorMessage = getErrorMessage(error);
 
-                if (errorMessage in error) {
+                if (errorMessage in errorMessages) {
                     errorMessages[errorMessage]++;
                 }
                 else {
