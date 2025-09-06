@@ -231,6 +231,7 @@
                 gridData.push({
                     "Message": getErrorMessage(error),
                     "Type": error.event_name,
+                    "Error Info": JSON.stringify(error.event_info, null, 2),
                     "Time": error.time_stamp
                 });
             }
@@ -306,6 +307,7 @@
                 <zg-colgroup>
                     <zg-column type="text" index="Message"></zg-column>
                     <zg-column type="text" index="Type"></zg-column>
+                    <zg-column type="element" type-element-tag-name="pre" index="Error Info"></zg-column>
                     <zg-column type="date" index="Time" type-date-format="hh:mm:ss, dddd, MMMM Do YYYY" sort-desc="true"></zg-column>
                 </zg-colgroup>
             `;
