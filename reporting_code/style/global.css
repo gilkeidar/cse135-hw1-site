@@ -112,3 +112,8 @@ pre {
     max-height: 50dvh;
     overflow-y: auto;
 }
+
+zing-grid pre {
+    margin: 0;
+    padding: 0;
+}
