@@ -432,7 +432,7 @@
             for (let session of sessions) {
                 if ("static_data" in session 
                     && "user-allows-javascript" in session.static_data) {
-                    if (session.session_data["user-allows-javascript"]) {
+                    if (session.static_data["user-allows-javascript"]) {
                         jsAvailability.haveJS++;
                     }
                     else {
