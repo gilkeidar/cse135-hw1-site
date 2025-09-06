@@ -83,7 +83,7 @@ main > section {
 }
 
 /*  Taken from the MDN code demo    */
-pre, code {
+code {
     background-color: var(--code-bg-color);
     /* color: #cccccc; */
     /* color: silver; */
