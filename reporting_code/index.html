@@ -75,6 +75,10 @@
             background: lightyellow;
             padding: 1dvh 1dvw;
         }
+
+        #error-section {
+            flex: 2;
+        }
     </style>
     <script src="https://cdn.zingchart.com/zingchart.min.js" defer></script>
     <script src="https://cdn.zinggrid.com/zinggrid.min.js" defer></script>
@@ -88,7 +92,7 @@
             <h2>Most Clicked Page Elements</h2>
             <div id="click-graphset"></div>
         </section>
-        <section>
+        <section id="error-section">
             <h2>Errors Per Page</h2>
             <div id="errors-chart"></div>
             <zing-grid id="all-errors-grid" sort search pager page-size="5"
