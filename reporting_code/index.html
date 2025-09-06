@@ -350,13 +350,13 @@
             let errorPages = [];
 
             for (let page in pages) {
-                for (let error of pages[page].errors) {
-                    //  Add error to errorPages array (for bar chart)
-                    errorPages.push({
-                        page: page,
-                        numErrors: pages[page].numErrors
-                    });
+                //  Add error page to errorPages array (for bar chart)
+                errorPages.push({
+                    page: page,
+                    numErrors: pages[page].numErrors
+                });
 
+                for (let error of pages[page].errors) {
                     //  Add error to grid
                     gridData.push({
                         "Page": error.page,
