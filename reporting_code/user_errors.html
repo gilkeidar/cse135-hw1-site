@@ -104,11 +104,20 @@
 
             //  Page section structure:
             //  <h2> Page Title </h2>
+            //  <h3>Number of Errors on page</h3>
+            //  Pie chart of event error types on page
+            //  Bar chart showing the frequency of each particular error event
+            //  Grid of raw error events.
 
             //  1.  Add title
             let pageTitle = document.createElement("h2");
             pageTitle.innerHTML = `Error Dashboard For <code>${page}</code>`;
             pageSection.appendChild(pageTitle);
+
+            //  2.  Add Number of Errors on page
+            let numErrorsElement = document.createElement("h3");
+            numErrorsElement.innerHTML = `${pages[page].numErrors} Logged Errors`;
+            pageSection.appendChild(numErrorsElement);
 
 
             return pageSection;
