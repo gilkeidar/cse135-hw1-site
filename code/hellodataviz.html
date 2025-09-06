@@ -127,16 +127,19 @@
             let uniqueVisitors = Array(numDays).fill(null);
 
             for (let session of sessionArray) {
-                let day_index = getDayAgoIndexFromTimestamp(numDays, 
-                    session.performance_data['page-load-end']);
+                if ("performance_data" in session
+                    && "page-load-end" in session.performance_data) {
+                    let day_index = getDayAgoIndexFromTimestamp(numDays, 
+                        session.performance_data['page-load-end']);
 
-                sessions[day_index] =
-                    (sessions[day_index] == null) ? 1 : sessions[day_index] + 1;
+                    sessions[day_index] =
+                        (sessions[day_index] == null) ? 1 : sessions[day_index] + 1;
 
-                if (uniqueVisitors[day_index] == null) {
-                    uniqueVisitors[day_index] = new Set();
+                    if (uniqueVisitors[day_index] == null) {
+                        uniqueVisitors[day_index] = new Set();
+                    }
+                    uniqueVisitors[day_index].add(session.user_id);
                 }
-                uniqueVisitors[day_index].add(session.user_id);
             }
 
             for (let i = 0; i < numDays; i++) {
