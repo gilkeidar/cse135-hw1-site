@@ -207,6 +207,7 @@
                         else {
                             //  Create new page object
                             pages[page] = {
+                                page: page,
                                 numErrors: 1,
                                 errors: [ activity_data ]
                             };
@@ -215,10 +216,19 @@
                 }
             }
 
-            //  3.  Create a section for each page
-            let main = document.querySelector('main');
+            //  3.  Convert pages object to array and sort it in descending
+            //      order by number of errors
+            let pageArray = [];
             for (let page in pages) {
-                let pageObject = createPageErrorDashboard(page, pages);
+                pageArray.push(pages[page]);
+            }
+
+            pageArray.sort((p1, p2) => p2.numErrors - p1.numErrors);
+
+            //  4.  Create a section for each page
+            let main = document.querySelector('main');
+            for (let page of pageArray) {
+                let pageObject = createPageErrorDashboard(page);
 
                 main.appendChild(pageObject.sectionElement);
 
