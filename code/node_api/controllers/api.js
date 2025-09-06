@@ -469,6 +469,8 @@ app.get('/errors', async (req, res) => {
 		}
 	});
 
+	console.log(activity_bursts);
+
 	res.set('Access-Control-Allow-Origin', "https://reporting.gilkeidar.com");
 
 	res.status(200).set("Content-Type", "application/json")
