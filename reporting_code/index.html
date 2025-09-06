@@ -88,7 +88,18 @@
             <div id="click-graphset"></div>
         </section>
         <section>
-            <h2>Metric 2</h2>
+            <h2>Errors Per Page</h2>
+            <div id="errors-graphset"></div>
+            <zing-grid id="all-errors-grid" sort search pager page-size="5"
+                page-size-options="1, 2, 3, 4, 5">
+                <zg-caption>Site-wide logged errors</zg-caption>
+                <zg-colgroup>
+                    <zg-column type="text" index="Page"></zg-column>
+                    <zg-column type="text" index="Type"></zg-column>
+                    <zg-column type="element" type-element-tag-name="pre" index="Message"></zg-column>
+                    <zg-column type="number" index="Time"></zg-column>
+                </zg-colgroup>
+            </zing-grid>
         </section>
         <section>
             <h2>Metric 3</h2>
@@ -330,6 +341,24 @@
 
             console.log("errors:");
             console.log(pages);
+
+            //  1.  Create grid from pages object
+            let gridData = [];
+
+            for (let page in pages) {
+                for (let error of pages[page].errors) {
+                    gridData.push({
+                        "Page": error.page,
+                        "Type": error.event_name,
+                        "Message": JSON.stringify(event.event_info, null, 2),
+                        "Time": error.time_stamp
+                    });
+                }
+            }
+
+            let grid = document.querySelector("#all-errors-grid");
+            grid.setData(gridData);
+
         }
 
         addEventListener('load', async (e) => {
