@@ -273,25 +273,6 @@
                 createPieChart(page), createBarChart(page)
             ];
 
-            // //  3.  Add pie chart
-            // let pieChartElement = document.createElement("div");
-            // let pieChartID = `pie-chart-${uniqueIdCounter++}`;
-            // pieChartElement.id = pieChartID;
-            
-            // pageSection.appendChild(pieChartElement);
-
-            // let pieChartConfig = createPieChart(page);
-            // console.log(pieChartConfig);
-
-            // //  4.  Add bar chart
-            // let barChartElement = document.createElement("div");
-            // let barChartID = `bar-chart-${uniqueIdCounter++}`;
-            // barChartElement.id = barChartID;
-
-            // pageSection.appendChild(barChartElement);
-
-            // let barChartConfig = createBarChart(page);
-
             //  4.  Add grid
             let gridElement = document.createElement("zing-grid");
             let gridElementID = `grid-${uniqueIdCounter++}`;
@@ -387,18 +368,6 @@
                         graphset: pageObject.graphset
                     }
                 });
-
-                //  Render pie chart
-                // zingchart.render({
-                //     id: pageObject.pieChartID,
-                //     data: pageObject.pieChartConfig
-                // });
-
-                // //  Render bar chart
-                // zingchart.render({
-                //     id: pageObject.barChartID,
-                //     data: pageObject.barChartConfig
-                // });
 
                 //  Render grid
                 let grid = document.querySelector(`#${pageObject.gridElementID}`);
