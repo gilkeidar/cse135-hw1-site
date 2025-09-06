@@ -90,7 +90,7 @@
         </section>
         <section>
             <h2>Errors Per Page</h2>
-            <div id="errors-graphset"></div>
+            <div id="errors-chart"></div>
             <zing-grid id="all-errors-grid" sort search pager page-size="5"
                 page-size-options="1, 2, 3, 4, 5">
                 <zg-caption>Site-wide logged errors</zg-caption>
@@ -346,8 +346,18 @@
             //  1.  Create grid from pages object
             let gridData = [];
 
+            //  2.  Create bar chart
+            let errorPages = [];
+
             for (let page in pages) {
                 for (let error of pages[page].errors) {
+                    //  Add error to errorPages array (for bar chart)
+                    errorPages.push({
+                        page: page,
+                        numErrors: pages[page].numErrors
+                    });
+
+                    //  Add error to grid
                     gridData.push({
                         "Page": error.page,
                         "Type": error.event_name,
@@ -360,6 +370,46 @@
             let grid = document.querySelector("#all-errors-grid");
             grid.setData(gridData);
 
+            //  3.  Sort errorPages array by numErrors
+            errorPages.sort((p1, p2) => p2.numErrors - p1.numErrors);
+
+            let scaleX = [];
+            let scaleY = [];
+
+            for (let page of errorPages) {
+                scaleX.push(page.page);
+                scaleY.push(page.numErrors);
+            }
+
+            //  4.  Render bar chart
+            let barConfig = {
+                type: 'bar',
+                title: {
+                    text: "Errors Per Page",
+                    fontSize: 24
+                },
+                scaleX: {
+                    label: {text: "Pages"},
+                    labels: scaleX
+                },
+                scaleY: {
+                    step: 1
+                },
+                series: [
+                    {
+                        values: scaleY,
+                        text: "# errors per page",
+                        tooltip: {
+                            text: "%kt had %vt errors."
+                        }
+                    }
+                ]
+            };
+
+            zingchart.render({
+                id: "errors-chart",
+                data: barConfig
+            });
         }
 
         addEventListener('load', async (e) => {
