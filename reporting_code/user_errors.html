@@ -155,7 +155,6 @@
 
         function createBarChart(page) {
             console.log(`createBarChart(${page.page})`);
-            console.log(page);
             //  Create a bar chart showing the frequency of each error message
             //  x-axis: error event message string
             //  y-axis: frequency of error event message
@@ -165,7 +164,6 @@
             let errorMessages = {};
             for (let error of page.errors) {
                 let errorMessage = getErrorMessage(error);
-                console.log(errorMessage);
 
                 if (errorMessage in error) {
                     errorMessages[errorMessage]++;
