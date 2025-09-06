@@ -228,8 +228,8 @@
 
             for (let error of page.errors) {
                 gridData.push({
-                    "Type": error.event_name,
                     "Message": getErrorMessage(error),
+                    "Type": error.event_name,
                     "Time": error.time_stamp
                 });
             }
@@ -292,8 +292,8 @@
             gridElement.innerHTML = `
                 <zg-caption>Page Errors</zg-caption>
                 <zg-colgroup>
-                    <zg-column type="text" index="Type"></zg-column>
                     <zg-column type="text" index="Message"></zg-column>
+                    <zg-column type="text" index="Type"></zg-column>
                     <zg-column type="date" index="Time" type-date-format="hh:mm:ss, dddd, MMMM Do YYYY" sort-desc="true"></zg-column>
                 </zg-colgroup>
             `;
