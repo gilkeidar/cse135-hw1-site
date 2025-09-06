@@ -108,7 +108,7 @@
 
             let errorTypes = {};
             for (let error of page.errors) {
-                if (error in errorTypes) {
+                if (error.event_name in errorTypes) {
                     errorTypes[error.event_name]++;
                 } else {
                     errorTypes[error.event_name] = 1;
