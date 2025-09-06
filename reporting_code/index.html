@@ -75,10 +75,6 @@
             background: lightyellow;
             padding: 1dvh 1dvw;
         }
-
-        #click-section {
-            flex: 2;
-        }
     </style>
     <script src="https://cdn.zingchart.com/zingchart.min.js" defer></script>
     <script src="https://cdn.zinggrid.com/zinggrid.min.js" defer></script>
@@ -88,7 +84,7 @@
         <h1>Analytics Dashboard</h1>
     </header>
     <main>
-        <section id="click-section">
+        <section>
             <h2>Most Clicked Page Elements</h2>
             <div id="click-graphset"></div>
         </section>
@@ -174,6 +170,8 @@
                 title: {
                     text: page
                 },
+                height: "100%",
+                width: "20%",
                 scaleX: {
                     label: {text: "Clicked Elements"},
                     labels: clickedElementNames
@@ -282,7 +280,7 @@
             console.log(graphset);
 
             let graphsetConfig = {
-                graphset: graphset
+                graphset: graphset,
             };
 
             zingchart.render({
