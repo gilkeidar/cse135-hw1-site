@@ -76,6 +76,10 @@ class Model {
         return await this.database.collection(tableName).findOne(criteria);
     }
 
+    async getMany(tableName, criteria) {
+        return await this.database.collection(tableName).find(criteria);
+    }
+
     async createOne(tableName, object) {
         let result = {acknowledged: false};
         try {

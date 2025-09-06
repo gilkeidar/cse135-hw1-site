@@ -458,6 +458,24 @@ app.get('/no-script', async (req, res) => {
 	}
 });
 
+//	Analytics routing (for faster queries)
+app.get('/errors', async (req, res) => {
+	console.log("GET /errors");
+
+	//	1.	Return activity-bursts that contain errors.
+	let activity_bursts = await model.getMany("activity-bursts", {
+		activity: {
+			event_name: {$regex: "error"}
+		}
+	});
+
+	res.set('Access-Control-Allow-Origin', "https://reporting.gilkeidar.com");
+
+	res.status(200).set("Content-Type", "application/json")
+		.send(activity_bursts);
+
+});
+
 
 app.listen(port, () => {
 	//	Initialize model
