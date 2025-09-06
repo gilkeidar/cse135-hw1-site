@@ -76,7 +76,7 @@
             padding: 1dvh 1dvw;
         }
 
-        #error-section {
+        #click-section {
             flex: 2;
         }
     </style>
@@ -88,11 +88,11 @@
         <h1>Analytics Dashboard</h1>
     </header>
     <main>
-        <section>
+        <section id="click-section">
             <h2>Most Clicked Page Elements</h2>
             <div id="click-graphset"></div>
         </section>
-        <section id="error-section">
+        <section>
             <h2>Errors Per Page</h2>
             <div id="errors-chart"></div>
             <zing-grid id="all-errors-grid" sort search pager page-size="5"
