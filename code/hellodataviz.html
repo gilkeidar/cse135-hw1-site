@@ -234,23 +234,26 @@
             let pageAccesses = {};
 
             for (let session of sessionArray) {
-                let url = removeIndexHTML(session.static_data['entry-point']);
+                if ("static_data" in session
+                    && "entry-point" in session.static_data) {   
+                    let url = removeIndexHTML(session.static_data['entry-point']);
 
-                if (url in pageAccesses) {
-                    pageAccesses[url].numEntryPointAccesses++;
-                }
-                else {
-                    //  Note: The reason numAccesses is counted as 0 here and
-                    //  not as 1 is to avoid double counting, since when a page
-                    //  is opened, the entry point access is counted by the
-                    //  UserSessions.static_data["entry-point"] property while
-                    //  the access is also counted by a visibilitychange event.
-                    //  We shall count the visibilitychange event in a separate
-                    //  for loop (when we loop over ActivityData objects)
-                    pageAccesses[url] = {
-                        numAccesses: 0,
-                        numEntryPointAccesses: 1
-                    };
+                    if (url in pageAccesses) {
+                        pageAccesses[url].numEntryPointAccesses++;
+                    }
+                    else {
+                        //  Note: The reason numAccesses is counted as 0 here and
+                        //  not as 1 is to avoid double counting, since when a page
+                        //  is opened, the entry point access is counted by the
+                        //  UserSessions.static_data["entry-point"] property while
+                        //  the access is also counted by a visibilitychange event.
+                        //  We shall count the visibilitychange event in a separate
+                        //  for loop (when we loop over ActivityData objects)
+                        pageAccesses[url] = {
+                            numAccesses: 0,
+                            numEntryPointAccesses: 1
+                        };
+                    }
                 }
             }
 
