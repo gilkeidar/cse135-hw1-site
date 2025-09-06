@@ -210,7 +210,7 @@
                         values: scaleY,
                         text: "Frequency of error messages",
                         tooltip: {
-                            text: "Error %kt occurred %vt times."
+                            text: "'%kt' occurred %vt times."
                         },
                         backgroundColor: "darkred"
                     }
@@ -259,6 +259,9 @@
             pageSection.appendChild(barChartElement);
 
             let barChartConfig = createBarChart(page);
+
+            //  5.  Add grid
+            let gridElement = document.createElement("zing-grid");
 
             return {
                 sectionElement: pageSection,
