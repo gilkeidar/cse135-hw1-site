@@ -55,7 +55,9 @@
                     </li>
                     <li>
                         A bar chart showing the frequency of each particular
-                        error event (to see which errors happen the most often)
+                        error event (to see which errors happen the most often);
+                        this is helpful assuming that some error messages are
+                        repeated.
                         <ul>
                             <li>
                                 <strong>x-axis:</strong> Error event message
@@ -137,6 +139,41 @@
                 series: series
             };
         }
+
+        function getErrorMessage(error) {
+            if ("event_info" in error) {
+                if ("message" in error.event_info) {
+                    return error.event_info.message;
+                }
+                if ("arguments" in error.event_info) {
+                    return error.event_info.arguments[0];
+                }
+            }
+
+            return "Unknown Error";
+        }
+
+        function createBarChart(page) {
+            //  Create a bar chart showing the frequency of each error message
+            //  x-axis: error event message string
+            //  y-axis: frequency of error event message
+            //  The chart x-axis should be sorted in non-increasing order of
+            //  frequency.
+
+            let errorMessages = {};
+            for (let error of page.errors) {
+                let errorMessage = getErrorMessage(error);
+
+                if (errorMessage in error) {
+                    error[errorMessage]++;
+                }
+                else {
+                    error[errorMessage] = 1;
+                }
+            }
+
+            console.log(errorMessages);
+        }
         
         function createPageErrorDashboard(page) {
             console.log(`createPageErrorDashboard(${page.page})`);
@@ -171,11 +208,22 @@
             let pieChartConfig = createPieChart(page);
             console.log(pieChartConfig);
 
+            //  4.  Add bar chart
+            let barChartElement = dpcument.createElement("div");
+            let barChartID = `bar-chart-${uniqueIdCounter++}`;
+            barChartElement.id = barChartID;
+
+            pageSection.appendChild(barChartElement);
+
+            let barChartConfig = createBarChart(page);
+
             return {
                 sectionElement: pageSection,
                 pieChartID: pieChartID,
-                pieChartConfig: pieChartConfig
-            }
+                pieChartConfig: pieChartConfig,
+                barChartID: barChartID,
+                barChartConfig: barChartConfig
+            };
         }
 
         addEventListener("load", async (e) => {
