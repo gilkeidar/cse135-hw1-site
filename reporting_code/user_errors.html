@@ -171,12 +171,11 @@
             let pieChartConfig = createPieChart(page, pages);
             console.log(pieChartConfig);
 
-            zingchart.render({
-                id: pieChartID,
-                data: pieChartConfig
-            });
-
-            return pageSection;
+            return {
+                sectionElement: pageSection,
+                pieChartID: pieChartID,
+                pieChartConfig: pieChartConfig
+            }
         }
 
         addEventListener("load", async (e) => {
@@ -219,9 +218,14 @@
             //  3.  Create a section for each page
             let main = document.querySelector('main');
             for (let page in pages) {
-                let pageSection = createPageErrorDashboard(page, pages);
+                let pageObject = createPageErrorDashboard(page, pages);
 
-                main.appendChild(pageSection);
+                main.appendChild(pageObject.sectionElement);
+
+                zingchart.render({
+                    id: pageObject.pieChartID,
+                    data: pageObject.pieChartConfig
+                });
             }
         })
     </script>
