@@ -77,7 +77,7 @@ class Model {
     }
 
     async getMany(tableName, criteria) {
-        return await this.database.collection(tableName).find(criteria);
+        return await this.database.collection(tableName).find(criteria).toArray();
     }
 
     async createOne(tableName, object) {

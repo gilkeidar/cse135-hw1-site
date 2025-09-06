@@ -465,11 +465,9 @@ app.get('/errors', async (req, res) => {
 	//	1.	Return activity-bursts that contain errors.
 	let activity_bursts = await model.getMany("activity-bursts", {
 		activity: {
-			event_name: "console-error"
+			event_name: {$regex: "error"}
 		}
 	});
-
-	console.log(activity_bursts);
 
 	res.set('Access-Control-Allow-Origin', "https://reporting.gilkeidar.com");
 
