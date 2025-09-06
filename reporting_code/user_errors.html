@@ -260,26 +260,37 @@
                 <span style="color: darkred">${page.numErrors}</span>`;
             pageSection.appendChild(numErrorsElement);
 
-            //  3.  Add pie chart
-            let pieChartElement = document.createElement("div");
-            let pieChartID = `pie-chart-${uniqueIdCounter++}`;
-            pieChartElement.id = pieChartID;
+            //  3.  Add pie and bar graph graphset
+            let graphSetElement = document.createElement("div");
+            let graphSetID = `graphset-${uniqueIdCounter++}`;
+            graphSetElement.id = graphSetID;
+
+            pageSection.appendChild(graphSetElement);
+
+            let graphset = [
+                createPieChart(page), createBarChart(page)
+            ];
+
+            // //  3.  Add pie chart
+            // let pieChartElement = document.createElement("div");
+            // let pieChartID = `pie-chart-${uniqueIdCounter++}`;
+            // pieChartElement.id = pieChartID;
             
-            pageSection.appendChild(pieChartElement);
+            // pageSection.appendChild(pieChartElement);
 
-            let pieChartConfig = createPieChart(page);
-            console.log(pieChartConfig);
+            // let pieChartConfig = createPieChart(page);
+            // console.log(pieChartConfig);
 
-            //  4.  Add bar chart
-            let barChartElement = document.createElement("div");
-            let barChartID = `bar-chart-${uniqueIdCounter++}`;
-            barChartElement.id = barChartID;
+            // //  4.  Add bar chart
+            // let barChartElement = document.createElement("div");
+            // let barChartID = `bar-chart-${uniqueIdCounter++}`;
+            // barChartElement.id = barChartID;
 
-            pageSection.appendChild(barChartElement);
+            // pageSection.appendChild(barChartElement);
 
-            let barChartConfig = createBarChart(page);
+            // let barChartConfig = createBarChart(page);
 
-            //  5.  Add grid
+            //  4.  Add grid
             let gridElement = document.createElement("zing-grid");
             let gridElementID = `grid-${uniqueIdCounter++}`;
             gridElement.id = gridElementID;
@@ -304,10 +315,8 @@
 
             return {
                 sectionElement: pageSection,
-                pieChartID: pieChartID,
-                pieChartConfig: pieChartConfig,
-                barChartID: barChartID,
-                barChartConfig: barChartConfig,
+                graphSetID: graphSetID,
+                graphset: graphset,
                 gridElementID: gridElementID,
                 gridData: gridData
             };
@@ -367,17 +376,25 @@
 
                 main.appendChild(pageObject.sectionElement);
 
-                //  Render pie chart
+                //  Render graphset
                 zingchart.render({
-                    id: pageObject.pieChartID,
-                    data: pageObject.pieChartConfig
-                });
+                    id: pageObject.graphSetID,
+                    data: {
+                        graphset: graphset
+                    }
+                })
 
-                //  Render bar chart
-                zingchart.render({
-                    id: pageObject.barChartID,
-                    data: pageObject.barChartConfig
-                });
+                //  Render pie chart
+                // zingchart.render({
+                //     id: pageObject.pieChartID,
+                //     data: pageObject.pieChartConfig
+                // });
+
+                // //  Render bar chart
+                // zingchart.render({
+                //     id: pageObject.barChartID,
+                //     data: pageObject.barChartConfig
+                // });
 
                 //  Render grid
                 let grid = document.querySelector(`#${pageObject.gridElementID}`);
