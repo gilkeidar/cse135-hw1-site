@@ -573,7 +573,6 @@ class ActivityEventLogger {
      */
     static getConsoleErrorEventInfo(e) {
         return {
-            message: e.detail.arguments[0],
             arguments: e.detail.arguments
         };
     }
