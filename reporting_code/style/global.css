@@ -92,9 +92,12 @@ code {
     font-family: 'Courier New', Courier, monospace;
 }
 
+p code {
+    font-size: 1rem;
+}
+
 code {
     padding: 0 3px;
-    font-size: 1rem;
 }
 
 pre code {
