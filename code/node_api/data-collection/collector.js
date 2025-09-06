@@ -308,9 +308,16 @@ class ActivityEventLogger {
 
         //  2.  Setup event handling
         for (let event_name of ActivityEventLogger.activity_events) {
-            document.addEventListener(event_name, (e) => {
-                this.logActivityEvent(e);
-            });
+            if (event_name == "error") {
+                window.addEventListener(event_name, (e) => {
+                    this.logActivityEvent(e);
+                })
+            }
+            else {
+                document.addEventListener(event_name, (e) => {
+                    this.logActivityEvent(e);
+                });
+            }
         }
 
         //  3.  Begin tracking user idleness
