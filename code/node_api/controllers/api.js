@@ -465,7 +465,7 @@ app.get('/errors', async (req, res) => {
 	//	1.	Return activity-bursts that contain errors.
 	let activity_bursts = await model.getMany("activity-bursts", {
 		activity: {
-			event_name: {$regex: "error"}
+			event_name: "console-error"
 		}
 	});
 
