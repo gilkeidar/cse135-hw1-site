@@ -182,6 +182,8 @@
 
         function renderClickedPageElements(activity) {
             console.log("renderClickedPageElements()");
+            //  NOTE: Potential optimization: Query ONLY click ActivityData
+            //  events! (Maybe add a special /api/click-events?)
             
             //  Question: For each page p: What elements in p are being clicked
             //      on, and how often?
@@ -271,8 +273,62 @@
             });
         }
 
+        function isErrorEvent(activityData) {
+            return activityData.event_name.includes("error");
+        }
+
         function renderErrorAnalysis(activity) {
             console.log("renderErrorAnalysis()");
+
+            //  Question: For each page p, what errors have been thrown?
+            //  (Will answer this question in more detail in the report).
+            //  Simple answer:
+            //  1.  Include a bar chart showing the number of errors that occur
+            //      on each page.
+            //      x-axis: pages that have logged at least one error
+            //      y-axis: the number of errors logged on each page
+            //      This should be sorted in non-increasing order from left to
+            //      right so that the page with the most errors is the left-most
+            //      bar.  
+            //  2.  Include a grid for each page that had at least one error
+            //      thrown that contains a listing of the error events that
+            //      occurred on that page.
+
+            //  1.  Create a pages object (key->value hashmap where key is page
+            //      path and value is an object with a number of errors and an
+            //      array of error events).
+            let pages = {};
+            
+            //  2.  Iterate through ActivityData objects and note each error
+            //      event as it appears.
+            for (let activity_burst of activity) {
+                for (let activity_data of activity_burst.activity) {
+                    //  1.  Determine whether activity_data is of an error
+                    //      event.
+                    if (isErrorEvent(activity_data)) {
+                        //  1.  Get page path
+                        let page = activity_data.page;
+
+                        //  2.  If the pages object already has this page as a
+                        //      key, then log the error event and increment the
+                        //      number of events in that page.
+                        if (page in pages) {
+                            pages[page].numErrors++;
+                            pages[page].errors.push(activity_data);
+                        }
+                        else {
+                            //  Create new page object
+                            pages[page] = {
+                                numErrors: 1,
+                                errors: [ activity_data ]
+                            };
+                        }
+                    }
+                }
+            }
+
+            console.log("errors:");
+            console.log(pages);
         }
 
         addEventListener('load', async (e) => {
