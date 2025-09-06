@@ -116,7 +116,8 @@
 
             //  2.  Add Number of Errors on page
             let numErrorsElement = document.createElement("h3");
-            numErrorsElement.innerHTML = `${pages[page].numErrors} Logged Errors`;
+            numErrorsElement.innerHTML = `# Errors: 
+                <span style="color: 'darkred'">${pages[page].numErrors}</span>`;
             pageSection.appendChild(numErrorsElement);
 
 
