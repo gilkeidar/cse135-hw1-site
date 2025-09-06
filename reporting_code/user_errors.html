@@ -228,7 +228,7 @@
 
             for (let error of page.errors) {
                 gridData.push({
-                    "Type": error.event_info,
+                    "Type": error.event_name,
                     "Message": getErrorMessage(error),
                     "Time": error.time_stamp
                 });
