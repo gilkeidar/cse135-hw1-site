@@ -93,7 +93,72 @@
         </section>
     </main>
     <script>
+        function isErrorEvent(activityData) {
+            return activityData.event_name.includes("error");
+        }
+        
+        function createPageErrorDashboard(page, pages) {
+            console.log(`createPageErrorDashboard(${page})`);
 
+            let pageSection = document.createElement("section");
+
+            //  Page section structure:
+            //  <h2> Page Title </h2>
+
+            //  1.  Add title
+            let pageTitle = document.createElement("h2");
+            pageTitle.innerHTML = `<code>${page}</code> Error Dashboard`;
+            pageSection.appendChild(pageTitle);
+
+
+            return pageSection;
+        }
+
+        addEventListener("load", async (e) => {
+            //  1.  Query ActivityBurst data from the REST API endpoint (need
+            //      error data).
+            let response = 
+                await fetch('https://gilkeidar.com/api/activity-bursts');
+            let activity = await response.json();
+
+            //  2.  Create a pages object (key->value hashmap where key is page
+            //      path and value is an object with a number of errors and an
+            //      array of error events).
+            let pages = {};
+            for (let activity_burst of activity) {
+                for (let activity_data of activity_burst.activity) {
+                    //  1.  Determine whether activity_data is of an error
+                    //      event.
+                    if (isErrorEvent(activity_data)) {
+                        //  1.  Get page path
+                        let page = activity_data.page;
+
+                        //  2.  If the pages object already has this page as a
+                        //      key, then log the error event and increment the
+                        //      number of events in that page.
+                        if (page in pages) {
+                            pages[page].numErrors++;
+                            pages[page].errors.push(activity_data);
+                        }
+                        else {
+                            //  Create new page object
+                            pages[page] = {
+                                numErrors: 1,
+                                errors: [ activity_data ]
+                            };
+                        }
+                    }
+                }
+            }
+
+            //  3.  Create a section for each page
+            let main = document.querySelector('main');
+            for (let page in pages) {
+                let pageSection = createPageErrorDashboard(page, pages);
+
+                main.appendChild(pageSection);
+            }
+        })
     </script>
 </body>
 </html>
