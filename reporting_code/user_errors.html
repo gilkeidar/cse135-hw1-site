@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CSE 135 HW Lives!</title>
+    <link rel="icon" href="/assets/favicon.ico">
+    <style>
+        * {
+            /* padding: 0; */
+            /* margin: 0; */
+            /* font-family: 'Times New Roman', Times, serif; */
+            /* box-sizing: border-box; */
+            /* font-size: 1rem; */
+        }
+
+        /*  CSS Variable definitions */
+        :root {
+            /* Colors */
+            --code-color: #cccccc;
+            --code-bg-color: #1f1f1f;
+            --section-bg-color: beige;
+            --subsection-bg-color: lightblue;
+
+            /* Font sizes */
+            --h1-font-size: 3rem;
+            --h2-font-size: 2rem;
+            --h3-font-size: 1.5rem;
+            --p-font-size: 1.2rem;
+        }
+
+        h1 {
+            font-size: var(--h1-font-size);
+            font-family: sans-serif;
+        }
+        h2 {
+            font-size: var(--h2-font-size);
+            font-family: sans-serif;
+        }
+        h3 {
+            font-size: var(--h3-font-size);
+        }
+
+        p {
+            margin: 0 1dvw;
+            font-size: var(--p-font-size);
+            max-width: 100ch;
+        }
+
+        body {
+            display: flex;
+            flex-direction: column;
+            gap: 1dvh;
+            padding: 1dvh 1dvw;
+            min-height: 100dvh;
+        }
+
+        header {
+            padding: 3dvh 3dvw;
+            background: var(--section-bg-color);
+            text-align: center;
+        }
+
+        main {
+            flex: 1;
+            background: var(--section-bg-color);
+            padding: 1dvh 1dvw;
+            display: flex;
+            flex-direction: column;
+            gap: 1dvh;
+        }
+
+        main > section {
+            flex: 1;
+            background: lightyellow;
+            padding: 1dvh 1dvw;
+        }
+    </style>
+    <script src="https://cdn.zingchart.com/zingchart.min.js" defer></script>
+    <script src="https://cdn.zinggrid.com/zinggrid.min.js" defer></script>
+</head>
+<body>
+    <header>
+        <h1>Detailed Report</h1>
+    </header>
+    <main>
+        <section>
+            <h2></h2>
+        </section>
+    </main>
+    <script>
+    </script>
+</body>
+</html>
