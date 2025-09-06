@@ -93,6 +93,8 @@
         </section>
     </main>
     <script>
+        let uniqueIdCounter = 1;
+
         function isErrorEvent(activityData) {
             return activityData.event_name.includes("error");
         }
@@ -161,7 +163,7 @@
 
             //  3.  Add pie chart
             let pieChartElement = document.createElement("div");
-            pieChartElement.id = `${page}-pie-chart`;
+            pieChartElement.id = `pie-chart-${uniqueIdCounter}`;
             
             pageSection.appendChild(pieChartElement);
 
