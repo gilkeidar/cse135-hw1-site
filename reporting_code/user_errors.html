@@ -114,7 +114,7 @@
 
             for (let errorType in errorTypes) {
                 let percent = 
-                    Math.floor((errorsTypes[errorType] / pages[page.numErrors]) * 10000) / 100;
+                    Math.floor((errorTypes[errorType] / pages[page.numErrors]) * 10000) / 100;
                 series.push({
                     text: errorType,
                     values: [errorTypes[errorType] / pages[page].numErrors],
