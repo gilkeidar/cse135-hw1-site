@@ -96,6 +96,11 @@
         function isErrorEvent(activityData) {
             return activityData.event_name.includes("error");
         }
+
+        function createPieChart(page, pages) {
+            //  Create Pie chart showing breakdown of events by type
+            console.log(pages[page]);
+        }
         
         function createPageErrorDashboard(page, pages) {
             console.log(`createPageErrorDashboard(${page})`);
@@ -120,6 +125,16 @@
                 <span style="color: red">${pages[page].numErrors}</span>`;
             pageSection.appendChild(numErrorsElement);
 
+            //  3.  Add pie chart
+            let pieChartElement = document.createElement("div");
+            pieChartElement.id = `${page}-pie-chart`;
+
+            let pieChartConfig = createPieChart(page, pages);
+
+            zingchart.render({
+                id: pieChartElement.id,
+                data: pieChartConfig
+            });
 
             return pageSection;
         }
