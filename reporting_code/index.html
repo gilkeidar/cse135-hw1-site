@@ -461,7 +461,8 @@
 
             let series = [];
 
-            for (let property of jsAvailability) {
+            for (let propertyName in jsAvailability) {
+                let property = jsAvailability[propertyName];
                 if (property.freq > 0) {
                     series.push({
                         text: property.text,
