@@ -44,6 +44,14 @@ p:nth-child(n + 2) {
     margin-top: 1dvh;
 }
 
+a {
+    font-size: var(--p-font-size);
+}
+
+li {
+    font-size: var(--p-font-size);
+}
+
 body {
     display: flex;
     flex-direction: column;
