@@ -435,14 +435,19 @@
         addEventListener('load', async (e) => {
             //  1.  Query UserSessions and ActivityBurst data from the REST API
             //      endpoint.
-            let response = await fetch('https://gilkeidar.com/api/user-sessions');
+
+            //  1.  Get click event ActivityBursts
+            let response = await fetch('https://gilkeidar.com/api/click-events');
+            let clickActivity = await response.json();
+
+            response = await fetch('https://gilkeidar.com/api/user-sessions');
             let sessions = await response.json();
             
             response = await fetch('https://gilkeidar.com/api/activity-bursts');
             let activity = await response.json();
 
             //  2.  Render each metric's charts
-            renderClickedPageElements(activity);
+            renderClickedPageElements(clickActivity);
             renderErrorAnalysis(activity);
             renderJavaScriptAvailability(sessions);
         });
