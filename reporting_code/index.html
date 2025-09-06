@@ -440,15 +440,17 @@
             let response = await fetch('https://gilkeidar.com/api/click-events');
             let clickActivity = await response.json();
 
+            //  2.  Get error event ActivityBursts
+            response = await fetch('https://gilkeidar.com/api/errors');
+            let errorActivity = await response.json();
+
+            //  3.  Get user sessions
             response = await fetch('https://gilkeidar.com/api/user-sessions');
             let sessions = await response.json();
-            
-            response = await fetch('https://gilkeidar.com/api/activity-bursts');
-            let activity = await response.json();
 
-            //  2.  Render each metric's charts
+            //  4.  Render each metric's charts
             renderClickedPageElements(clickActivity);
-            renderErrorAnalysis(activity);
+            renderErrorAnalysis(errorActivity);
             renderJavaScriptAvailability(sessions);
         });
     </script>
