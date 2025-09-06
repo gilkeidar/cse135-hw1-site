@@ -50,6 +50,7 @@ a {
 
 li {
     font-size: var(--p-font-size);
+    max-width: 100ch;
 }
 
 body {
