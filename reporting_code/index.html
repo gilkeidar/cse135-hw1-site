@@ -463,7 +463,10 @@
 
             for (let propertyName in jsAvailability) {
                 let property = jsAvailability[propertyName];
-                let percent = Math.floor((property.freq / sessions.length) * 10000) / 100;
+
+                //  Display percent with 2 decimal places
+                let percent = 
+                    Math.floor((property.freq / sessions.length) * 10000) / 100;
                 if (property.freq > 0) {
                     series.push({
                         text: property.text,
