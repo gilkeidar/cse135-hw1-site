@@ -326,7 +326,7 @@
             //  1.  Query ActivityBurst data from the REST API endpoint (need
             //      error data).
             let response = 
-                await fetch('https://gilkeidar.com/api/activity-bursts');
+                await fetch('https://gilkeidar.com/api/errors');
             let activity = await response.json();
 
             //  2.  Create a pages object (key->value hashmap where key is page
