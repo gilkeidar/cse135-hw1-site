@@ -217,6 +217,25 @@
                 ]
             };
         }
+
+        function createGrid(page) {
+            console.log(`createGrid(${page.page})`);
+
+            //  Grid that contains a listing of the error events that occurred
+            //  on the page.
+
+            let gridData = [];
+
+            for (let error of page.errors) {
+                gridData.push({
+                    "Type": error.event_info,
+                    "Message": getErrorMessage(error),
+                    "Time": error.time_stamp
+                });
+            }
+
+            return gridData;
+        }
         
         function createPageErrorDashboard(page) {
             console.log(`createPageErrorDashboard(${page.page})`);
@@ -262,13 +281,35 @@
 
             //  5.  Add grid
             let gridElement = document.createElement("zing-grid");
+            let gridElementID = `grid-${uniqueIDCounter++}`;
+            gridElement.id = gridElementID;
+
+            gridElement.setAttribute("sort", "");
+            gridElement.setAttribute("search", "");
+            gridElement.setAttribute("pager", "");
+            gridElement.setAttribute("page-size", "5");
+
+            gridElement.innerHTML = `
+                <zg-caption>Page Errors</zg-caption>
+                <zg-colgroup>
+                    <zg-column type="text" index="Type"></zg-column>
+                    <zg-column type="text" index="Message"></zg-column>
+                    <zg-column type="date" index="Time" type-date-format="hh:mm:ss, dddd, MMMM Do YYYY" sort-desc="true"></zg-column>
+                </zg-colgroup>
+            `;
+
+            pageSection.appendChild(gridElement);
+
+            let gridData = createGrid(page);
 
             return {
                 sectionElement: pageSection,
                 pieChartID: pieChartID,
                 pieChartConfig: pieChartConfig,
                 barChartID: barChartID,
-                barChartConfig: barChartConfig
+                barChartConfig: barChartConfig,
+                gridElementID: gridElementID,
+                gridData: gridData
             };
         }
 
@@ -336,7 +377,11 @@
                 zingchart.render({
                     id: pageObject.barChartID,
                     data: pageObject.barChartConfig
-                })
+                });
+
+                //  Render grid
+                let grid = document.querySelector(`#${pageObject.gridElementID}`);
+                grid.setData(pageObject.gridData);
             }
         })
     </script>
