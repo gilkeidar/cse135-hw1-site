@@ -92,6 +92,8 @@
                 it had logged at least one error. These will be sorted in
                 descending order of page error rate.
             </p>
+            <p><em>Note to the TA:</em> There might be some easter eggs in those
+                error logs...</p>
         </section>
     </main>
     <script>
@@ -251,16 +253,18 @@
             //  Bar chart showing the frequency of each particular error event
             //  Grid of raw error events.
 
-            //  1.  Add title
+            //  1.  Add title with number of errors on the page
             let pageTitle = document.createElement("h2");
-            pageTitle.innerHTML = `Error Dashboard For <code>${page.page}</code>`;
+            pageTitle.innerHTML = 
+                `Error Dashboard For <code>${page.page}</code> | Errors: 
+                <span style="color: darkred">${page.numErrors}</span>`;
             pageSection.appendChild(pageTitle);
 
             //  2.  Add Number of Errors on page
-            let numErrorsElement = document.createElement("h3");
-            numErrorsElement.innerHTML = `Errors: 
-                <span style="color: darkred">${page.numErrors}</span>`;
-            pageSection.appendChild(numErrorsElement);
+            // let numErrorsElement = document.createElement("h3");
+            // numErrorsElement.innerHTML = `Errors: 
+            //     <span style="color: darkred">${page.numErrors}</span>`;
+            // pageSection.appendChild(numErrorsElement);
 
             //  3.  Add pie and bar graph graphset
             let graphSetElement = document.createElement("div");
